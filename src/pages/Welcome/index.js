@@ -8,8 +8,19 @@ import {
 } from "react-native";
 
 import * as Animatable from 'react-native-animatable'
+import { useNavigation } from "@react-navigation/native";
+import { useFonts, Montserrat_400Regular, Montserrat_700Bold } from '@expo-google-fonts/montserrat'
 
 export default function Welcome() {
+    const [fonteLoaded] = useFonts({
+        Montserrat_400Regular, Montserrat_700Bold
+    });
+
+    if( !fonteLoaded ){
+        return null;
+    }
+
+    const navigation = useNavigation();
     return (
         <View style={styles.container}>
             <View style={styles.containerLogo}>
@@ -28,7 +39,10 @@ export default function Welcome() {
                     Faça o login para começar
                 </Text>
 
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity 
+                style={styles.button}
+                onPress={() => navigation.navigate('Login')}
+                >
                     <Text style={styles.buttonText}>Acessar</Text>
                 </TouchableOpacity>
             </Animatable.View>
@@ -57,12 +71,13 @@ const styles = StyleSheet.create({
         paddingEnd: '5%'
     },
     title: {
-        fontSize: 24,
-        fontWeight: 'bold',
+        fontSize: 20,
+        fontFamily: 'Montserrat_700Bold',
         marginTop: 28,
         marginBottom: 12
     },
     textLogin: {
+        fontFamily: 'Montserrat_400Regular',
         color: 'black'
     },
     button: {
@@ -78,8 +93,6 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 18,
-        color: 'black',
-        fontWeight: 'bold'
-
+        fontFamily: 'Montserrat_700Bold'
     }
 })
