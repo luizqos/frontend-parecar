@@ -9,17 +9,9 @@ import {
 
 import * as Animatable from 'react-native-animatable'
 import { useNavigation } from "@react-navigation/native";
-import { useFonts, Montserrat_400Regular, Montserrat_700Bold } from '@expo-google-fonts/montserrat'
 
-export default function Welcome() {
-    const [fonteLoaded] = useFonts({
-        Montserrat_400Regular, Montserrat_700Bold
-    });
 
-    if( !fonteLoaded ){
-        return null;
-    }
-
+export default function Home() {
     const navigation = useNavigation();
     return (
         <View style={styles.container}>
@@ -31,18 +23,7 @@ export default function Welcome() {
                     resizeMode="contain"
                 />
             </View>
-
-
-            <Animatable.View delay={500} animation="fadeInUp" style={styles.containerForm}>
-                <Text style={styles.title}>Sua Solução Inteligente para Estacionar sem Complicações!</Text>
-                <TouchableOpacity 
-                style={styles.button}
-                onPress={() => navigation.navigate('Login')}
-                >
-                    <Text style={styles.buttonText}>Acessar</Text>
-                </TouchableOpacity>
-            </Animatable.View>
-
+            <Text style={styles.title}>Pagina Home</Text>
         </View>
 
     );

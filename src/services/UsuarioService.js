@@ -26,7 +26,6 @@ class UsuarioService {
         // Verifica se o email está na lista de emails permitidos
         const emailUsuario = dadosUsuario.email || "";
         const estaNaLista = emailsPermitidos.includes(emailUsuario);
-        console.log(emailUsuario, estaNaLista);
         return estaNaLista ? true : false
     }
 }

@@ -7,6 +7,7 @@ import usuarioService from "../../services/UsuarioService";
 export default function Login() {
     const [email, setEmail] = useState('')
     const [senha, setSenha] = useState('')
+    const [mensagem, setMensagem] = useState('')
     const navigation = useNavigation();
 
     function logar() {
@@ -17,15 +18,13 @@ export default function Login() {
 
         usuarioService.login(data)
             .then((response) => {
-                //setHasLogin(true)
-                //navigation.reset({
-                //  index: 0,
-                //routes: [{name: ""}]
-                //})
-                if (response === true) {
-                    Alert.alert("Autenticado.")
+                if (response) {
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: "Home" }]
+                    });
                 } else {
-                    Alert.alert("Nao Autenticado.")
+                    setMensagem('Não Autenticado');
                 }
 
             })
@@ -53,7 +52,7 @@ export default function Login() {
                            value={senha}
                     style={styles.input}
                 />
-
+                <Text style={styles.registerText}>{mensagem}</Text>
                 <TouchableOpacity
                     style={styles.button}
                     onPress={logar}
