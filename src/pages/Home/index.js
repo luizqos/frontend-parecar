@@ -3,13 +3,23 @@ import {
     View,
     Text,
     StyleSheet,
+    Image,
     TouchableOpacity
 } from "react-native";
 
-import * as Animatable from 'react-native-animatable';
+import * as Animatable from 'react-native-animatable'
 import { useNavigation } from "@react-navigation/native";
+import { useFonts, Montserrat_400Regular, Montserrat_700Bold } from '@expo-google-fonts/montserrat'
 
 export default function Welcome() {
+    const [fonteLoaded] = useFonts({
+        Montserrat_400Regular, Montserrat_700Bold
+    });
+
+    if( !fonteLoaded ){
+        return null;
+    }
+
     const navigation = useNavigation();
     return (
         <View style={styles.container}>

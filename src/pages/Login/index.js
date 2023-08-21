@@ -1,15 +1,38 @@
-import React from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import * as Animatable from 'react-native-animatable';
-import { useFonts, Montserrat_400Regular, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
+import { useNavigation } from "@react-navigation/native";
+import usuarioService from "../../services/UsuarioService";
 
 export default function Login() {
-    const [fonteLoaded] = useFonts({
-        Montserrat_400Regular, Montserrat_700Bold
-    });
+    const [email, setEmail] = useState('')
+    const [senha, setSenha] = useState('')
+    const navigation = useNavigation();
 
-    if( !fonteLoaded ){
-        return null;
+    function logar() {
+        let data = {
+            email,
+            senha
+        }
+
+        usuarioService.login(data)
+            .then((response) => {
+                //setHasLogin(true)
+                //navigation.reset({
+                //  index: 0,
+                //routes: [{name: ""}]
+                //})
+                if (response === true) {
+                    Alert.alert("Autenticado.")
+                } else {
+                    Alert.alert("Nao Autenticado.")
+                }
+
+            })
+            .catch((error) => {
+                Alert.alert("Ocorreu um erro, tente novamente")
+            })
+
     }
     return (
         <View style={styles.container}>
@@ -20,17 +43,22 @@ export default function Login() {
             <Animatable.View delay={500} animation="fadeInUp" style={styles.containerForm}>
                 <Text style={styles.title}>Email</Text>
                 <TextInput placeholder="Digite seu email"
+                           onChangeText={setEmail}
+                           value={email}
                     style={styles.input}
                 />
                 <Text style={styles.title}>Senha</Text>
                 <TextInput placeholder="Digite sua senha"
+                           onChangeText={setSenha}
+                           value={senha}
                     style={styles.input}
                 />
 
                 <TouchableOpacity
                     style={styles.button}
+                    onPress={logar}
                 >
-                    <Text style={styles.buttonText}>Acessar</Text>
+                    <Text style={styles.buttonText}>Entrar</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
