@@ -7,8 +7,8 @@ import usuarioService from "../../services/UsuarioService";
 export default function Login() {
     const [email, setEmail] = useState('')
     const [senha, setSenha] = useState('')
-    const [mensagem, setMensagem] = useState('')
-    const navigation = useNavigation();
+    const [mensagem, setMensagem] = useState(null)
+    const navigation = useNavigation()
 
     function logar() {
         let data = {
@@ -24,12 +24,14 @@ export default function Login() {
                         routes: [{ name: "Home" }]
                     });
                 } else {
-                    setMensagem('Não Autenticado');
+                    setMensagem('Acesso negado, verifique usuário e senha.')
+                    setTimeout(() => {
+                        setMensagem(null);
+                      }, 5000)
                 }
-
             })
             .catch((error) => {
-                Alert.alert("Ocorreu um erro, tente novamente")
+                Alert.alert('Erro', 'Tente novamente.')
             })
 
     }
@@ -52,7 +54,8 @@ export default function Login() {
                            value={senha}
                     style={styles.input}
                 />
-                <Text style={styles.registerText}>{mensagem}</Text>
+                <Text style={styles.forgotText}>Esqueci a senha</Text>
+                <Text style={styles.errorText}>{mensagem}</Text>
                 <TouchableOpacity
                     style={styles.button}
                     onPress={logar}
@@ -109,6 +112,7 @@ const styles = StyleSheet.create({
         width: '70%',
         marginLeft: 'auto',
         marginRight: 'auto',
+        marginTop: 15,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -131,5 +135,17 @@ const styles = StyleSheet.create({
     registerText: {
         fontFamily: 'Montserrat_400Regular',
         color: 'black'
+    },    
+    forgotText: {
+        fontSize: 14,
+        textAlign: 'right',
+        fontFamily: 'Montserrat_400Regular',
+        color: 'black'
+    },
+    errorText: {
+        fontSize: 16,
+        textAlign: 'left',
+        fontFamily: 'Montserrat_400Regular',
+        color: 'red'
     }
 })

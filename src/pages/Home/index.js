@@ -1,4 +1,5 @@
-import React from "react";
+import React from 'react';
+
 import {
     View,
     Text,
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     },
     containerLogo: {
         flex: 2,
-        backgroundColor: '#FFBE00',
+        backgroundColor: '#E5E5E5',
         justifyContent: 'center',
         alignItems: 'center'
     },
