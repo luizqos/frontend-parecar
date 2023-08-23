@@ -18,7 +18,7 @@ function Tabs() {
     screenOptions={{
       tabBarActiveTintColor: '#000',
       tabBarInactiveTintColor: '#000',
-      tabBarLabelStyle: { fontSize: 14, fontFamily: 'Montserrat_400Regular'},
+      tabBarLabelStyle: { fontSize: 12, fontFamily: 'Montserrat_700Bold'},
       tabBarItemStyle: { width: 100 },
       tabBarStyle: { position: 'absolute', backgroundColor: '#FFBE00' },
     }}
