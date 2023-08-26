@@ -27,7 +27,7 @@ export default function Login() {
                     setMensagem('Acesso negado, verifique usuário e senha.')
                     setTimeout(() => {
                         setMensagem(null);
-                      }, 5000)
+                      }, 5000);
                 }
             })
             .catch((error) => {

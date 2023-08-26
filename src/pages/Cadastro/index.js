@@ -1,14 +1,17 @@
-import React from 'react';
-
+import React from "react";
 import {
     View,
-    StyleSheet
+    Text,
+    StyleSheet,
+    Image,
+    TouchableOpacity
 } from "react-native";
 
-import * as Animatable from 'react-native-animatable';
+import * as Animatable from 'react-native-animatable'
 import { useNavigation } from "@react-navigation/native";
 
-export default function Home() {
+
+export default function Cadastro() {
     const navigation = useNavigation();
     return (
         <View style={styles.container}>
@@ -20,6 +23,7 @@ export default function Home() {
                     resizeMode="contain"
                 />
             </View>
+            <Text style={styles.title}>Pagina Cadastro</Text>
         </View>
 
     );
@@ -31,7 +35,7 @@ const styles = StyleSheet.create({
     },
     containerLogo: {
         flex: 2,
-        backgroundColor: '#E5E5E5',
+        backgroundColor: '#FFBE00',
         justifyContent: 'center',
         alignItems: 'center'
     },
