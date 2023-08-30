@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-
-import { View, StyleSheet, PermissionsAndroid } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
+import * as Animatable from 'react-native-animatable';
 import {
   requestBackgroundPermissionsAsync,
   getCurrentPositionAsync,
-  LocationObject,
   watchPositionAsync,
   LocationAccuracy,
 } from "expo-location";
@@ -13,7 +12,6 @@ import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
 
 export default function Home() {
-  //const [location, setLocation] = useState <LocationObject | null>(null);
   const [location, setLocation] = useState(null);
   const [initialRegion, setinitialRegion] = useState(null);
   const navigation = useNavigation();
@@ -21,7 +19,7 @@ export default function Home() {
   async function requestLocationPermissions() {
     const { granted } = await requestBackgroundPermissionsAsync();
     if (granted) {
-      const getCurrentPosition = await getCurrentPositionAsync();
+      await getCurrentPositionAsync();
     }
   }
 
@@ -40,11 +38,10 @@ export default function Home() {
       }
     );
   }, []);
-
   return (
     <View style={styles.container}>
       {location ? (
-        <MapView
+        <MapView 
           style={styles.map}
           initialRegion={{
             latitude: location.coords.latitude,
@@ -62,23 +59,15 @@ export default function Home() {
           />
         </MapView>
       ) : (
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: -19.9111285,
-            longitude: -44.0696268,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        >
-          <Marker
-            coordinate={{
-              latitude: -19.9111285,
-              longitude: -44.0696268,
-            }}
-            title="Minha Localização"
+        <View style={styles.containerLogo}>
+          <Animatable.Image
+            animation="zoomInUp"
+            source={require("../../assets/img/logo.png")}
+            style={{ width: "75%" }}
+            resizeMode="contain"
           />
-        </MapView>
+        <Text style={styles.textoLoading}>Aguarde...</Text>
+        </View>
       )}
     </View>
   );
@@ -90,6 +79,7 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+    borderRadius: 20,
   },
   containerLogo: {
     flex: 2,
@@ -106,6 +96,12 @@ const styles = StyleSheet.create({
     paddingEnd: "5%",
   },
   title: {
+    fontSize: 20,
+    fontFamily: "Montserrat_700Bold",
+    marginTop: 28,
+    marginBottom: 12,
+  },
+  textoLoading: {
     fontSize: 20,
     fontFamily: "Montserrat_700Bold",
     marginTop: 28,
