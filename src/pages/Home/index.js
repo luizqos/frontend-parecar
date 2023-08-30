@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text } from "react-native";
-import * as Animatable from 'react-native-animatable';
+import {
+  View,
+  StyleSheet,
+  Text,
+  PermissionsAndroid,
+  Platform,
+} from "react-native";
+import * as Animatable from "react-native-animatable";
 import {
   requestBackgroundPermissionsAsync,
   getCurrentPositionAsync,
@@ -23,9 +29,31 @@ export default function Home() {
     }
   }
 
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("Permissão concedida");
+      } else {
+        console.log("Permissão negada");
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      requestLocationPermission();
+    }
+  }, []);
+
   useEffect(() => {
     requestLocationPermissions();
   }, []);
+
   useEffect(() => {
     watchPositionAsync(
       {
@@ -35,13 +63,14 @@ export default function Home() {
       },
       (reponse) => {
         setLocation(reponse);
+        setinitialRegion(reponse);
       }
     );
   }, []);
   return (
     <View style={styles.container}>
-      {location ? (
-        <MapView 
+      {location && initialRegion ? (
+        <MapView
           style={styles.map}
           initialRegion={{
             latitude: location.coords.latitude,
@@ -60,13 +89,13 @@ export default function Home() {
         </MapView>
       ) : (
         <View style={styles.containerLogo}>
-          <Animatable.Image
-            animation="zoomInUp"
-            source={require("../../assets/img/logo.png")}
-            style={{ width: "75%" }}
-            resizeMode="contain"
-          />
-        <Text style={styles.textoLoading}>Aguarde...</Text>
+            <Animatable.Image
+              animation="zoomInUp"
+              source={require("../../assets/img/logo.png")}
+              style={{ width: "75%" }}
+              resizeMode="contain"
+            />
+            <Text style={styles.textoLoading}>Aguarde...</Text>
         </View>
       )}
     </View>
@@ -123,3 +152,4 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat_700Bold",
   },
 });
+
