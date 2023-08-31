@@ -5,6 +5,7 @@ import {
   Text,
   PermissionsAndroid,
   Platform,
+  Dimensions
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import {
@@ -16,9 +17,11 @@ import {
 
 import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
+const {width, height} = Dimensions.get('screen');
 
 export default function Home() {
   const [location, setLocation] = useState(null);
+  const [marker, setMarker] = useState(null);
   const [initialRegion, setinitialRegion] = useState(null);
   const navigation = useNavigation();
 
@@ -61,29 +64,43 @@ export default function Home() {
         timeInterval: 1000,
         distanceInterval: 1,
       },
-      (reponse) => {
-        setLocation(reponse);
-        setinitialRegion(reponse);
+      (response) => {
+        setLocation(response);
+        setinitialRegion({
+          latitude: response.coords.latitude,
+          longitude: response.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421
+        });
+        setMarker({
+          latitude: -19.9298306,
+          longitude: -44.0589185
+        })
+
       }
     );
   }, []);
   return (
     <View style={styles.container}>
       {location && initialRegion ? (
-        <MapView
+        <MapView        
+        onMapReady={() => { 
+          Platform.OS === 'android' ? 
+          PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
+            .then( () => {
+              console.log("ACESSO PERMITIDO");
+            })
+            : ''
+        }}
           style={styles.map}
-          initialRegion={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
+          initialRegion={initialRegion}
+          zoomEnabled={true}
+          showsUserLocation={true}
+          loadingEnabled={true}
         >
           <Marker
-            coordinate={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-            }}
+            coordinate={marker}
             title="Minha Localização"
           />
         </MapView>
@@ -109,6 +126,8 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
     borderRadius: 20,
+    width: width,
+    height: height
   },
   containerLogo: {
     flex: 2,
