@@ -86,7 +86,7 @@ export default function Login() {
           >
             <MaterialCommunityIcons
               name={mostraSenha ? "eye-off" : "eye"}
-              size={20}
+              size={30}
               color="gray"
             />
           </TouchableOpacity>
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
   passwordIcon: {
     position: "absolute",
-    paddingTop: 15,
+    paddingTop: 10,
     right: 10,
   },
 });
