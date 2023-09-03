@@ -5,22 +5,20 @@ import {
   Text,
   PermissionsAndroid,
   Platform,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
-import {
-  watchPositionAsync,
-  LocationAccuracy,
-} from "expo-location";
+import { watchPositionAsync, LocationAccuracy } from "expo-location";
 
 import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
-const {width, height} = Dimensions.get('screen');
+const { width, height } = Dimensions.get("screen");
 
 export default function Home() {
   const [location, setLocation] = useState(null);
   const [marker, setMarker] = useState(null);
   const [initialRegion, setinitialRegion] = useState(null);
+  const [mensagem, setMensagem] = useState("Aguarde");
   const navigation = useNavigation();
 
   async function getLocation() {
@@ -36,26 +34,25 @@ export default function Home() {
           latitude: response.coords.latitude,
           longitude: response.coords.longitude,
           latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421
+          longitudeDelta: 0.0421,
         });
         setMarker({
           latitude: -19.9298306,
-          longitude: -44.0589185
-        })
-
+          longitude: -44.0589185,
+        });
       }
     );
   }
   const requestLocationPermission = async () => {
     try {
+      setMensagem("Estamos buscando sua localização");
       const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("Permissão concedida");
         getLocation();
       } else {
-        console.log("Permissão negada");
+        setMensagem("Permissão a localização não foi concedida");
       }
     } catch (err) {
       console.warn(err);
@@ -81,40 +78,36 @@ export default function Home() {
           latitude: response.coords.latitude,
           longitude: response.coords.longitude,
           latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421
+          longitudeDelta: 0.0421,
         });
         setMarker({
           latitude: -19.9298306,
-          longitude: -44.0589185
-        })
-
+          longitude: -44.0589185,
+        });
       }
     );
   }, []);
   return (
     <View style={styles.container}>
       {location && initialRegion ? (
-        <MapView        
+        <MapView
           style={styles.map}
           initialRegion={initialRegion}
           zoomEnabled={true}
           showsUserLocation={true}
           loadingEnabled={true}
         >
-          <Marker
-            coordinate={marker}
-            title="Estacione Aqui"
-          />
+          <Marker coordinate={marker} title="Estacione Aqui" />
         </MapView>
       ) : (
         <View style={styles.containerLogo}>
-            <Animatable.Image
-              animation="zoomInUp"
-              source={require("../../assets/img/logo.png")}
-              style={{ width: "75%" }}
-              resizeMode="contain"
-            />
-            <Text style={styles.textoLoading}>Aguarde...</Text>
+          <Animatable.Image
+            animation="zoomInUp"
+            source={require("../../assets/img/logo.png")}
+            style={{ width: "75%" }}
+            resizeMode="contain"
+          />
+          <Text style={styles.textoLoading}>{mensagem}</Text>
         </View>
       )}
     </View>
@@ -129,7 +122,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 20,
     width: width,
-    height: height
+    height: height,
   },
   containerLogo: {
     flex: 2,
@@ -173,4 +166,3 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat_700Bold",
   },
 });
-
