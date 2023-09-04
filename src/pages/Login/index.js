@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
   passwordIcon: {
     position: "absolute",
-    paddingTop: 10,
+    paddingTop: 5,
     right: 10,
   },
 });
