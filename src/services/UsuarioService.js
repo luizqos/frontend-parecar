@@ -2,7 +2,18 @@ import axios from "axios";
 import Config from "../util/Config";
 
 class UsuarioService {
-  async login2(data) {
+  async login(data) {
+    axios.interceptors.request.use(
+      (request) => {
+        console.log("Request:", request);
+        return request;
+      },
+      (error) => {
+        console.error("Request error:", error);
+        return Promise.reject(error);
+      }
+    );
+
     try {
       const response = await axios.post(Config.API_URL + "/login/auth", data, {
         timeout: Config.TIMEOUT_REQUEST,
@@ -14,32 +25,6 @@ class UsuarioService {
       console.log(error);
       return false;
     }
-  }
-
-  async login(data) {
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    const requestOptions = {
-      method: "POST",
-      headers: headers,
-      body: data,
-    };
-
-    fetch(Config.API_URL + "/login/auth", requestOptions)
-      .then(function (response) {
-        if (!response.ok) {
-          console.log("errou");
-          throw new Error("Erro na requisição");
-        }
-        return response.json();
-      })
-      .then(function (responseData) {
-        console.log(responseData);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
   }
 }
 

@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "build": "eas build -p android"
   },
   "dependencies": {
     "@expo-google-fonts/montserrat": "^0.2.3",
@@ -28,7 +29,6 @@
     "react": "18.2.0",
     "react-native": "0.72.4",
     "react-native-animatable": "^1.3.3",
-    "react-native-dotenv": "^3.4.9",
     "react-native-geolocation-service": "^5.3.1",
     "react-native-link": "^4.1.0",
     "react-native-maps": "^1.7.1",

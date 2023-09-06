@@ -1,5 +1,5 @@
 const Config = {
-  API_URL: "https://177.153.69.180:5443/api",
+  API_URL: "https://api.faciliptv.net.br/api",
   TIMEOUT_REQUEST: 5000,
   HEADER_REQUEST: {
     Accept: "application/json",
