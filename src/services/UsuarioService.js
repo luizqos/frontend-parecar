@@ -5,7 +5,6 @@ class UsuarioService {
   async login(data) {
     axios.interceptors.request.use(
       (request) => {
-        console.log("Request:", request);
         return request;
       },
       (error) => {
