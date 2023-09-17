@@ -1,6 +1,5 @@
-import { API_URL } from "@env";
 const Config = {
-  API_URL: API_URL,
+  API_URL: "https://api.faciliptv.net.br/api",
   TIMEOUT_REQUEST: 5000,
   HEADER_REQUEST: {
     Accept: "application/json",
