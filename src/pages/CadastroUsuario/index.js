@@ -108,7 +108,6 @@ export default function CadastroUsuario() {
     []
   );
   const tipo = radioButtons.find((item) => item.id === selectedId);
-  //console.log(tipo.value);
 
   const togglePasswordVisibility = () => {
     setMostraSenha(!mostraSenha);
