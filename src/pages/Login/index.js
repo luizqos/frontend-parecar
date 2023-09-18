@@ -25,7 +25,7 @@ export default function Login() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-    }, 30000);
+    }, 5000);
   };
 
   const togglePasswordVisibility = () => {
