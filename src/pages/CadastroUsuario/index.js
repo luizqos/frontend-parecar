@@ -197,9 +197,7 @@ export default function CadastroUsuario() {
                 </>
               ) : (
                 <>
-                  <TouchableOpacity style={styles.button} onPress={cadastrar}>
-                    <ButtonCadastrar />
-                  </TouchableOpacity>
+                  <ButtonCadastrar onPress={cadastrar} />
                 </>
               )}
             </View>
@@ -321,9 +319,7 @@ export default function CadastroUsuario() {
                 </>
               ) : (
                 <>
-                  <TouchableOpacity style={styles.button} onPress={cadastrar}>
-                    <ButtonCadastrar />
-                  </TouchableOpacity>
+                  <ButtonCadastrar onPress={cadastrar} />
                 </>
               )}
             </View>

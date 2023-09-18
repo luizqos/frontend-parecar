@@ -114,9 +114,7 @@ export default function Login() {
           </>
         ) : (
           <>
-            <TouchableOpacity style={styles.button} onPress={logar}>
-              <ButtonEntrar />
-            </TouchableOpacity>
+            <ButtonEntrar onPress={logar} />
           </>
         )}
         <TouchableOpacity
