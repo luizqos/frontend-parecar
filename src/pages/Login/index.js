@@ -27,6 +27,10 @@ export default function Login() {
     setEmail(inputText.toLowerCase());
   };
 
+  const irParaCadastro = () => {
+    navigation.navigate("CadastroUsuario");
+  };
+
   function logar() {
     let data = {
       email,
@@ -97,7 +101,10 @@ export default function Login() {
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.buttonRegister}>
+        <TouchableOpacity
+          style={styles.buttonRegister}
+          onPress={irParaCadastro}
+        >
           <Text style={styles.registerText}>
             Não possui uma conta? Cadastre-se
           </Text>

@@ -1,37 +1,36 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Welcome from "../pages/Welcome";
 import Login from "../pages/Login";
 import Home from "../pages/Home";
 import Cadastro from "../pages/Cadastro";
+import CadastroUsuario from "../pages/CadastroUsuario";
 
-import BottonNew from "../components/ButtonNew"
+import BottonNew from "../components/ButtonNew";
 
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-
 function Tabs() {
   return (
-    <Tab.Navigator initialRouteName="Inicio"
-    screenOptions={{
-      tabBarActiveTintColor: '#0000FF',
-      tabBarInactiveTintColor: '#000',
-      tabBarLabelStyle: { fontSize: 12,
-         fontFamily: 'Montserrat_700Bold'
+    <Tab.Navigator
+      initialRouteName="Inicio"
+      screenOptions={{
+        tabBarActiveTintColor: "#0000FF",
+        tabBarInactiveTintColor: "#000",
+        tabBarLabelStyle: { fontSize: 12, fontFamily: "Montserrat_700Bold" },
+        tabBarItemStyle: {
+          width: 100,
         },
-      tabBarItemStyle: { 
-        width: 100 
-      },
-      tabBarStyle: { 
-        position: 'absolute', 
-        backgroundColor: '#FFBE00', 
-        borderTopColor: 'transparent'
-      },
-    }}
+        tabBarStyle: {
+          position: "absolute",
+          backgroundColor: "#FFBE00",
+          borderTopColor: "transparent",
+        },
+      }}
     >
       <Tab.Screen
         name="Conta"
@@ -39,7 +38,11 @@ function Tabs() {
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account-circle" color={color} size={size} />
+            <MaterialCommunityIcons
+              name="account-circle"
+              color={color}
+              size={size}
+            />
           ),
         }}
       />
@@ -59,7 +62,7 @@ function Tabs() {
         options={{
           headerShown: false,
           tabBarLabelStyle: {
-            color: 'transparent'
+            color: "transparent",
           },
           tabBarIcon: ({ color, size }) => (
             <BottonNew color={color} size={size} />
@@ -83,7 +86,11 @@ function Tabs() {
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="cog-outline" color={color} size={size} />
+            <MaterialCommunityIcons
+              name="cog-outline"
+              color={color}
+              size={size}
+            />
           ),
         }}
       />
@@ -109,6 +116,11 @@ export default function Routes() {
         component={Tabs}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="CadastroUsuario"
+        component={CadastroUsuario}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
-  )
+  );
 }
