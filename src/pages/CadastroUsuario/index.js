@@ -9,10 +9,10 @@ import {
   Dimensions,
 } from "react-native";
 import { TextInputMask } from "react-native-masked-text";
-import RadioGroup from "react-native-radio-buttons-group";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Loading from "../../components/Loading";
 import ButtonCadastrar from "../../components/buttons/ButtonCadastrar";
+import TipoAcesso from "../../components/screens/TipoAcesso"; // Importe o componente
 import { useNavigation } from "@react-navigation/native";
 import usuarioService from "../../services/UsuarioService";
 const { height } = Dimensions.get("screen");
@@ -117,18 +117,11 @@ export default function CadastroUsuario() {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <View style={styles.containerTipo}>
-          <Text style={styles.title}>Crie seu acesso</Text>
-          <Text style={styles.subtitle}>Selecione seu tipo de acesso</Text>
-          <RadioGroup
-            radioButtons={radioButtons}
-            onPress={setSelectedId}
-            selectedId={selectedId}
-            borderColor="red"
-            layout="row"
-          />
-        </View>
-
+        <TipoAcesso
+          radioButtons={radioButtons}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+        />
         <View style={styles.containerForm}>
           {selectedId === "1" ? (
             <View style={styles.containerCliente}>
