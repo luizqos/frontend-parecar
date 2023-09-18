@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  Button,
+  ActivityIndicator,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -17,7 +19,14 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const [mostraSenha, setMostraSenha] = useState(false);
   const [mensagem, setMensagem] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
+  const startLoading = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 30000);
+  };
 
   const togglePasswordVisibility = () => {
     setMostraSenha(!mostraSenha);
@@ -32,6 +41,7 @@ export default function Login() {
   };
 
   function logar() {
+    startLoading();
     let data = {
       email,
       senha,
@@ -46,6 +56,7 @@ export default function Login() {
             routes: [{ name: "Home" }],
           });
         } else {
+          setLoading(false);
           setMensagem("Acesso negado, verifique usuário e senha.");
           setTimeout(() => {
             setMensagem(null);
@@ -97,9 +108,18 @@ export default function Login() {
         </View>
         <Text style={styles.forgotText}>Esqueci a senha</Text>
         <Text style={styles.errorText}>{mensagem}</Text>
-        <TouchableOpacity style={styles.button} onPress={logar}>
-          <Text style={styles.buttonText}>Entrar</Text>
-        </TouchableOpacity>
+        {loading ? (
+          <>
+            <Text style={styles.loading}>Aguarde...</Text>
+            <ActivityIndicator size="large" color="#FFBE00" />
+          </>
+        ) : (
+          <>
+            <TouchableOpacity style={styles.button} onPress={logar}>
+              <Text style={styles.buttonText}>Entrar</Text>
+            </TouchableOpacity>
+          </>
+        )}
 
         <TouchableOpacity
           style={styles.buttonRegister}
@@ -192,5 +212,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     paddingTop: 5,
     right: 10,
+  },
+  loading: {
+    textAlign: "center",
+    fontSize: 16,
+    fontFamily: "Montserrat_700Bold",
   },
 });
