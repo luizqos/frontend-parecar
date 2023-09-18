@@ -12,6 +12,7 @@ import { TextInputMask } from "react-native-masked-text";
 import RadioGroup from "react-native-radio-buttons-group";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Loading from "../../components/Loading";
+import ButtonCadastrar from "../../components/buttons/ButtonCadastrar";
 import { useNavigation } from "@react-navigation/native";
 import usuarioService from "../../services/UsuarioService";
 const { height } = Dimensions.get("screen");
@@ -204,7 +205,7 @@ export default function CadastroUsuario() {
               ) : (
                 <>
                   <TouchableOpacity style={styles.button} onPress={cadastrar}>
-                    <Text style={styles.buttonText}>Cadastrar</Text>
+                    <ButtonCadastrar />
                   </TouchableOpacity>
                 </>
               )}
@@ -328,7 +329,7 @@ export default function CadastroUsuario() {
               ) : (
                 <>
                   <TouchableOpacity style={styles.button} onPress={cadastrar}>
-                    <Text style={styles.buttonText}>Cadastrar</Text>
+                    <ButtonCadastrar />
                   </TouchableOpacity>
                 </>
               )}

@@ -7,7 +7,7 @@ import Home from "../pages/Home";
 import Cadastro from "../pages/Cadastro";
 import CadastroUsuario from "../pages/CadastroUsuario";
 
-import BottonNew from "../components/ButtonNew";
+import BottonNew from "../components/buttons/ButtonNew";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 

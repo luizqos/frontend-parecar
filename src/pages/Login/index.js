@@ -11,6 +11,7 @@ import * as Animatable from "react-native-animatable";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../../components/Loading";
+import ButtonEntrar from "../../components/buttons/ButtonEntrar";
 import usuarioService from "../../services/UsuarioService";
 
 export default function Login() {
@@ -114,7 +115,7 @@ export default function Login() {
         ) : (
           <>
             <TouchableOpacity style={styles.button} onPress={logar}>
-              <Text style={styles.buttonText}>Entrar</Text>
+              <ButtonEntrar />
             </TouchableOpacity>
           </>
         )}
