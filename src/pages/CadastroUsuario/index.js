@@ -6,12 +6,12 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
-  ActivityIndicator,
   Dimensions,
 } from "react-native";
 import { TextInputMask } from "react-native-masked-text";
 import RadioGroup from "react-native-radio-buttons-group";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Loading from "../../components/Loading";
 import { useNavigation } from "@react-navigation/native";
 import usuarioService from "../../services/UsuarioService";
 const { height } = Dimensions.get("screen");
@@ -199,8 +199,7 @@ export default function CadastroUsuario() {
               <Text style={styles.errorText}>{mensagem}</Text>
               {loading ? (
                 <>
-                  <Text style={styles.loading}>Aguarde...</Text>
-                  <ActivityIndicator size="large" color="#FFBE00" />
+                  <Loading />
                 </>
               ) : (
                 <>
@@ -324,8 +323,7 @@ export default function CadastroUsuario() {
               <Text style={styles.errorText}>{mensagem}</Text>
               {loading ? (
                 <>
-                  <Text style={styles.loading}>Aguarde...</Text>
-                  <ActivityIndicator size="large" color="#FFBE00" />
+                  <Loading />
                 </>
               ) : (
                 <>
@@ -429,10 +427,5 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontFamily: "Montserrat_400Regular",
     color: "red",
-  },
-  loading: {
-    textAlign: "center",
-    fontSize: 16,
-    fontFamily: "Montserrat_700Bold",
   },
 });

@@ -6,11 +6,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  ActivityIndicator,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
+import Loading from "../../components/Loading";
 import usuarioService from "../../services/UsuarioService";
 
 export default function Login() {
@@ -109,8 +109,7 @@ export default function Login() {
         <Text style={styles.errorText}>{mensagem}</Text>
         {loading ? (
           <>
-            <Text style={styles.loading}>Aguarde...</Text>
-            <ActivityIndicator size="large" color="#FFBE00" />
+            <Loading />
           </>
         ) : (
           <>
@@ -210,10 +209,5 @@ const styles = StyleSheet.create({
     position: "absolute",
     paddingTop: 5,
     right: 10,
-  },
-  loading: {
-    textAlign: "center",
-    fontSize: 16,
-    fontFamily: "Montserrat_700Bold",
   },
 });
