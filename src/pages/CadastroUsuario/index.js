@@ -12,15 +12,20 @@ import { TextInputMask } from "react-native-masked-text";
 import RadioGroup from "react-native-radio-buttons-group";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
+import usuarioService from "../../services/UsuarioService";
 const { height } = Dimensions.get("screen");
 
 export default function CadastroUsuario() {
   const navigation = useNavigation();
+  const [mensagem, setMensagem] = useState(null);
   const [selectedId, setSelectedId] = useState("1");
   const [cpf, setCpf] = useState("");
   const [cnpj, setCnpj] = useState("");
   const [telefone, setTelefone] = useState("");
   const [cep, setCep] = useState("");
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [placa, setPlaca] = useState("");
   const [senha, setSenha] = useState("");
   const [mostraSenha, setMostraSenha] = useState(false);
 
@@ -33,12 +38,50 @@ export default function CadastroUsuario() {
     } else textoConvertido = null;
     return textoConvertido;
   }
+  function cadastrar() {
+    let data = "";
+    let endpoint = "";
+    if (tipo.value === "C") {
+      data = {
+        nome: nome,
+        cpf: removeCaracteres(cpf, "numeros"),
+        email: email,
+        senha: senha,
+        telefone: removeCaracteres(telefone, "numeros"),
+        placa: removeCaracteres(placa, "letrasENumeros"),
+      };
+      endpoint = "clientes";
+    } else if (tipo.value === "E") {
+      data = {
+        nome: nome,
+        cpf: removeCaracteres(cpf, "numeros"),
+        email: email,
+        senha: senha,
+        telefone: removeCaracteres(telefone, "numeros"),
+        placa: removeCaracteres(placa, "letrasENumeros"),
+      };
+      endpoint = "estacionamentos";
+    }
 
-  // console.log("telefone", telefone, removeCaracteres(telefone, "numeros"));
-  // console.log("cep", cep, removeCaracteres(cep, "letrasENumeros"));
-  //console.log("cpf", cpf, removeCaracteres(cpf, "numeros"));
-  //console.log("cnpj", cnpj, removeCaracteres(cnpj, "numeros"));
-
+    usuarioService
+      .cadastro(data, endpoint)
+      .then((response) => {
+        if (response) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Login" }],
+          });
+        } else {
+          setMensagem("Ocorreu um erro ao fazer cadastro");
+          setTimeout(() => {
+            setMensagem(null);
+          }, 5000);
+        }
+      })
+      .catch((error) => {
+        Alert.alert("Erro", "Tente novamente.");
+      });
+  }
   const radioButtons = useMemo(
     () => [
       {
@@ -55,18 +98,11 @@ export default function CadastroUsuario() {
     []
   );
   const tipo = radioButtons.find((item) => item.id === selectedId);
-  console.log(tipo.value);
+  //console.log(tipo.value);
 
   const togglePasswordVisibility = () => {
     setMostraSenha(!mostraSenha);
   };
-
-  function cadastrar() {
-    let data = {
-      email,
-      senha,
-    };
-  }
 
   return (
     <View style={styles.container}>
@@ -90,6 +126,8 @@ export default function CadastroUsuario() {
               <TextInput
                 placeholder="Digite seu nome"
                 autoCapitalize="characters"
+                onChangeText={setNome}
+                value={nome}
                 style={styles.input}
               />
               <Text style={styles.titleItemForm}>Cpf</Text>
@@ -104,6 +142,8 @@ export default function CadastroUsuario() {
               <TextInput
                 placeholder="Digite seu email"
                 autoCapitalize="none"
+                onChangeText={setEmail}
+                value={email}
                 style={styles.input}
               />
               <Text style={styles.titleItemForm}>Senha</Text>
@@ -143,8 +183,11 @@ export default function CadastroUsuario() {
               <TextInput
                 placeholder="Digite a placa do veiculo"
                 autoCapitalize="characters"
+                onChangeText={setPlaca}
+                value={placa}
                 style={styles.input}
               />
+              <Text style={styles.errorText}>{mensagem}</Text>
               <TouchableOpacity style={styles.button} onPress={cadastrar}>
                 <Text style={styles.buttonText}>Cadastrar</Text>
               </TouchableOpacity>
@@ -260,6 +303,7 @@ export default function CadastroUsuario() {
                 autoCapitalize="characters"
                 style={styles.input}
               />
+              <Text style={styles.errorText}>{mensagem}</Text>
               <TouchableOpacity style={styles.button} onPress={cadastrar}>
                 <Text style={styles.buttonText}>Cadastrar</Text>
               </TouchableOpacity>
@@ -270,7 +314,6 @@ export default function CadastroUsuario() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -353,5 +396,11 @@ const styles = StyleSheet.create({
   passwordIcon: {
     position: "absolute",
     right: 10,
+  },
+  errorText: {
+    fontSize: 16,
+    textAlign: "left",
+    fontFamily: "Montserrat_400Regular",
+    color: "red",
   },
 });
