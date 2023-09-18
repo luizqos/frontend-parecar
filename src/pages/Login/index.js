@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  Button,
   ActivityIndicator,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
@@ -120,7 +119,6 @@ export default function Login() {
             </TouchableOpacity>
           </>
         )}
-
         <TouchableOpacity
           style={styles.buttonRegister}
           onPress={irParaCadastro}

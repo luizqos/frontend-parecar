@@ -27,7 +27,6 @@ class UsuarioService {
   }
 
   async cadastro(data, endpoint) {
-    console.log(endpoint);
     axios.interceptors.request.use(
       (request) => {
         return request;

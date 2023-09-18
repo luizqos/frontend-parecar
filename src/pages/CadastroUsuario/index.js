@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
+  ActivityIndicator,
   Dimensions,
 } from "react-native";
 import { TextInputMask } from "react-native-masked-text";
@@ -28,6 +29,13 @@ export default function CadastroUsuario() {
   const [placa, setPlaca] = useState("");
   const [senha, setSenha] = useState("");
   const [mostraSenha, setMostraSenha] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const startLoading = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+  };
 
   function removeCaracteres(texto, tipoRetorno) {
     let textoConvertido = texto;
@@ -39,6 +47,7 @@ export default function CadastroUsuario() {
     return textoConvertido;
   }
   function cadastrar() {
+    startLoading();
     let data = "";
     let endpoint = "";
     if (tipo.value === "C") {
@@ -72,6 +81,7 @@ export default function CadastroUsuario() {
             routes: [{ name: "Login" }],
           });
         } else {
+          setLoading(false);
           setMensagem("Ocorreu um erro ao fazer cadastro");
           setTimeout(() => {
             setMensagem(null);
@@ -188,9 +198,18 @@ export default function CadastroUsuario() {
                 style={styles.input}
               />
               <Text style={styles.errorText}>{mensagem}</Text>
-              <TouchableOpacity style={styles.button} onPress={cadastrar}>
-                <Text style={styles.buttonText}>Cadastrar</Text>
-              </TouchableOpacity>
+              {loading ? (
+                <>
+                  <Text style={styles.loading}>Aguarde...</Text>
+                  <ActivityIndicator size="large" color="#FFBE00" />
+                </>
+              ) : (
+                <>
+                  <TouchableOpacity style={styles.button} onPress={cadastrar}>
+                    <Text style={styles.buttonText}>Cadastrar</Text>
+                  </TouchableOpacity>
+                </>
+              )}
             </View>
           ) : (
             <View style={styles.containerEstacionamento}>
@@ -304,9 +323,18 @@ export default function CadastroUsuario() {
                 style={styles.input}
               />
               <Text style={styles.errorText}>{mensagem}</Text>
-              <TouchableOpacity style={styles.button} onPress={cadastrar}>
-                <Text style={styles.buttonText}>Cadastrar</Text>
-              </TouchableOpacity>
+              {loading ? (
+                <>
+                  <Text style={styles.loading}>Aguarde...</Text>
+                  <ActivityIndicator size="large" color="#FFBE00" />
+                </>
+              ) : (
+                <>
+                  <TouchableOpacity style={styles.button} onPress={cadastrar}>
+                    <Text style={styles.buttonText}>Cadastrar</Text>
+                  </TouchableOpacity>
+                </>
+              )}
             </View>
           )}
         </View>
@@ -402,5 +430,10 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontFamily: "Montserrat_400Regular",
     color: "red",
+  },
+  loading: {
+    textAlign: "center",
+    fontSize: 16,
+    fontFamily: "Montserrat_700Bold",
   },
 });
