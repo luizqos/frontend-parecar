@@ -46,7 +46,7 @@ function Tabs() {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Financeiro"
         component={Cadastro}
         options={{
@@ -55,7 +55,7 @@ function Tabs() {
             <MaterialCommunityIcons name="cash" color={color} size={size} />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Inicio"
         component={Home}
@@ -69,7 +69,7 @@ function Tabs() {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Veiculos"
         component={Cadastro}
         options={{
@@ -79,7 +79,7 @@ function Tabs() {
             <MaterialCommunityIcons name="car-back" color={color} size={size} />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Ajustes"
         component={Cadastro}
