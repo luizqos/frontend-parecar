@@ -1,18 +1,10 @@
 import React, { useMemo, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-  Dimensions,
-} from "react-native";
-import { TextInputMask } from "react-native-masked-text";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { View, Text, ScrollView, StyleSheet, Dimensions } from "react-native";
 import Loading from "../../components/Loading";
 import ButtonCadastrar from "../../components/buttons/ButtonCadastrar";
-import TipoAcesso from "../../components/screens/TipoAcesso"; // Importe o componente
+import TipoAcesso from "../../components/screens/TipoAcesso";
+import CadastroCliente from "../../components/screens/CadastroCliente";
+import CadastroEstacionamento from "../../components/screens/CadastroEstacionamento";
 import { useNavigation } from "@react-navigation/native";
 import usuarioService from "../../services/UsuarioService";
 const { height } = Dimensions.get("screen");
@@ -26,6 +18,15 @@ export default function CadastroUsuario() {
   const [telefone, setTelefone] = useState("");
   const [cep, setCep] = useState("");
   const [nome, setNome] = useState("");
+  const [nomeResponsavel, setNomeResponsavel] = useState("");
+  const [nomeFantasia, setNomeFantasia] = useState("");
+  const [razaoSocial, setRazaoSocial] = useState("");
+  const [endereco, setEndereco] = useState("");
+  const [numero, setNumero] = useState("");
+  const [complemento, setComplemento] = useState("");
+  const [bairro, setBairro] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [estado, setEstado] = useState("");
   const [email, setEmail] = useState("");
   const [placa, setPlaca] = useState("");
   const [senha, setSenha] = useState("");
@@ -63,16 +64,23 @@ export default function CadastroUsuario() {
       endpoint = "clientes";
     } else if (tipo.value === "E") {
       data = {
-        nome: nome,
-        cpf: removeCaracteres(cpf, "numeros"),
+        nomecontato: nomeResponsavel,
+        razaosocial: razaoSocial,
+        nomefantasia: nomeFantasia,
+        cnpj: removeCaracteres(cnpj, "numeros"),
         email: email,
         senha: senha,
         telefone: removeCaracteres(telefone, "numeros"),
-        placa: removeCaracteres(placa, "letrasENumeros"),
+        cep: removeCaracteres(cep, "letrasENumeros"),
+        logradouro: endereco,
+        numero: numero,
+        complemento: complemento,
+        bairro: bairro,
+        cidade: cidade,
+        estado: estado,
       };
       endpoint = "estacionamentos";
     }
-
     usuarioService
       .cadastro(data, endpoint)
       .then((response) => {
@@ -125,70 +133,22 @@ export default function CadastroUsuario() {
         <View style={styles.containerForm}>
           {selectedId === "1" ? (
             <View style={styles.containerCliente}>
-              <Text style={styles.titleItemForm}>Nome</Text>
-              <TextInput
-                placeholder="Digite seu nome"
-                autoCapitalize="characters"
-                onChangeText={setNome}
-                value={nome}
-                style={styles.input}
-              />
-              <Text style={styles.titleItemForm}>Cpf</Text>
-              <TextInputMask
-                style={styles.input}
-                type={"cpf"}
-                placeholder={"Digite o CPF"}
-                value={cpf}
-                onChangeText={(text) => setCpf(text)}
-              />
-              <Text style={styles.titleItemForm}>Email</Text>
-              <TextInput
-                placeholder="Digite seu email"
-                autoCapitalize="none"
-                onChangeText={setEmail}
-                value={email}
-                style={styles.input}
-              />
-              <Text style={styles.titleItemForm}>Senha</Text>
-              <View>
-                <TextInput
-                  placeholder="Digite sua senha"
-                  onChangeText={setSenha}
-                  secureTextEntry={!mostraSenha}
-                  value={senha}
-                  style={styles.input}
-                />
-                <TouchableOpacity
-                  onPress={togglePasswordVisibility}
-                  style={styles.passwordIcon}
-                >
-                  <MaterialCommunityIcons
-                    name={mostraSenha ? "eye-off" : "eye"}
-                    size={20}
-                    color="gray"
-                  />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.titleItemForm}>Celular</Text>
-              <TextInputMask
-                style={styles.input}
-                type={"cel-phone"}
-                options={{
-                  maskType: "BRL",
-                  withDDD: true,
-                  dddMask: "(99) ",
-                }}
-                placeholder="Digite seu celular"
-                value={telefone}
-                onChangeText={(text) => setTelefone(text)}
-              />
-              <Text style={styles.titleItemForm}>Placa do Veiculo</Text>
-              <TextInput
-                placeholder="Digite a placa do veiculo"
-                autoCapitalize="characters"
-                onChangeText={setPlaca}
-                value={placa}
-                style={styles.input}
+              <CadastroCliente
+                nome={nome}
+                cpf={cpf}
+                email={email}
+                senha={senha}
+                mostraSenha={mostraSenha}
+                telefone={telefone}
+                placa={placa}
+                setNome={setNome}
+                setCpf={setCpf}
+                setEmail={setEmail}
+                setSenha={setSenha}
+                setMostraSenha={setMostraSenha}
+                setTelefone={setTelefone}
+                setPlaca={setPlaca}
+                togglePasswordVisibility={togglePasswordVisibility}
               />
               <Text style={styles.errorText}>{mensagem}</Text>
               {loading ? (
@@ -203,114 +163,37 @@ export default function CadastroUsuario() {
             </View>
           ) : (
             <View style={styles.containerEstacionamento}>
-              <Text style={styles.titleItemForm}>Responsável</Text>
-              <TextInput
-                placeholder="Digite o Nome do Responsável"
-                autoCapitalize="characters"
-                style={styles.input}
-              />
-              <Text style={styles.titleItemForm}>Razão Social</Text>
-              <TextInput
-                placeholder="Digite a Razão Social"
-                autoCapitalize="characters"
-                style={styles.input}
-              />
-              <Text style={styles.titleItemForm}>Nome Fantasia</Text>
-              <TextInput
-                placeholder="Digite o Nome Fantasia"
-                autoCapitalize="characters"
-                style={styles.input}
-              />
-              <Text style={styles.titleItemForm}>Cnpj</Text>
-              <TextInputMask
-                style={styles.input}
-                type={"cnpj"}
-                placeholder={"Digite o CNPJ"}
-                value={cnpj}
-                onChangeText={(text) => setCnpj(text)}
-              />
-              <Text style={styles.titleItemForm}>Email</Text>
-              <TextInput
-                placeholder="Digite seu email"
-                autoCapitalize="none"
-                style={styles.input}
-              />
-              <Text style={styles.titleItemForm}>Senha</Text>
-              <View>
-                <TextInput
-                  placeholder="Digite sua senha"
-                  onChangeText={setSenha}
-                  secureTextEntry={!mostraSenha}
-                  value={senha}
-                  style={styles.input}
-                />
-                <TouchableOpacity
-                  onPress={togglePasswordVisibility}
-                  style={styles.passwordIcon}
-                >
-                  <MaterialCommunityIcons
-                    name={mostraSenha ? "eye-off" : "eye"}
-                    size={20}
-                    color="gray"
-                  />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.titleItemForm}>Telefone</Text>
-              <TextInputMask
-                style={styles.input}
-                type={"cel-phone"}
-                options={{
-                  maskType: "BRL",
-                  withDDD: true,
-                  dddMask: "(99) ",
-                }}
-                placeholder="Digite Telefone"
-                value={telefone}
-                onChangeText={(text) => setTelefone(text)}
-              />
-              <Text style={styles.titleItemForm}>Cep</Text>
-              <TextInputMask
-                style={styles.input}
-                type={"zip-code"}
-                placeholder="Digite o Cep"
-                value={cep}
-                onChangeText={(text) => setCep(text)}
-              />
-              <Text style={styles.titleItemForm}>Endereço</Text>
-              <TextInput
-                placeholder="Digite o endereço"
-                autoCapitalize="characters"
-                style={styles.input}
-              />
-              <Text style={styles.titleItemForm}>Numero</Text>
-              <TextInput
-                placeholder="Digite o Número"
-                autoCapitalize="characters"
-                style={styles.input}
-              />
-              <Text style={styles.titleItemForm}>Complemento</Text>
-              <TextInput
-                placeholder="Digite o Complemento"
-                autoCapitalize="characters"
-                style={styles.input}
-              />
-              <Text style={styles.titleItemForm}>Bairro</Text>
-              <TextInput
-                placeholder="Digite o Bairro"
-                autoCapitalize="characters"
-                style={styles.input}
-              />
-              <Text style={styles.titleItemForm}>Cidade</Text>
-              <TextInput
-                placeholder="Digite a Cidade"
-                autoCapitalize="characters"
-                style={styles.input}
-              />
-              <Text style={styles.titleItemForm}>Estado</Text>
-              <TextInput
-                placeholder="Digite o Estado"
-                autoCapitalize="characters"
-                style={styles.input}
+              <CadastroEstacionamento
+                cnpj={cnpj}
+                setCnpj={setCnpj}
+                email={email}
+                setEmail={setEmail}
+                senha={senha}
+                setSenha={setSenha}
+                mostraSenha={mostraSenha}
+                togglePasswordVisibility={togglePasswordVisibility}
+                telefone={telefone}
+                setTelefone={setTelefone}
+                cep={cep}
+                setCep={setCep}
+                nomeResponsavel={nomeResponsavel}
+                setNomeResponsavel={setNomeResponsavel}
+                nomeFantasia={nomeFantasia}
+                setNomeFantasia={setNomeFantasia}
+                razaoSocial={razaoSocial}
+                setRazaoSocial={setRazaoSocial}
+                endereco={endereco}
+                setEndereco={setEndereco}
+                numero={numero}
+                setNumero={setNumero}
+                complemento={complemento}
+                setComplemento={setComplemento}
+                bairro={bairro}
+                setBairro={setBairro}
+                cidade={cidade}
+                setCidade={setCidade}
+                estado={estado}
+                setEstado={setEstado}
               />
               <Text style={styles.errorText}>{mensagem}</Text>
               {loading ? (
@@ -338,7 +221,7 @@ const styles = StyleSheet.create({
     height: height / 1.3,
   },
   containerEstacionamento: {
-    height: height * 1.1,
+    height: height * 1.15,
   },
   radioButton: {
     marginBottom: 10,
