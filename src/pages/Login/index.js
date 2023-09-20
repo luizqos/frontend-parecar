@@ -10,6 +10,8 @@ import {
 import * as Animatable from "react-native-animatable";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
+import Loading from "../../components/Loading";
+import ButtonEntrar from "../../components/buttons/ButtonEntrar";
 import usuarioService from "../../services/UsuarioService";
 
 export default function Login() {
@@ -17,7 +19,14 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const [mostraSenha, setMostraSenha] = useState(false);
   const [mensagem, setMensagem] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
+  const startLoading = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+  };
 
   const togglePasswordVisibility = () => {
     setMostraSenha(!mostraSenha);
@@ -27,7 +36,12 @@ export default function Login() {
     setEmail(inputText.toLowerCase());
   };
 
+  const irParaCadastro = () => {
+    navigation.navigate("CadastroUsuario");
+  };
+
   function logar() {
+    startLoading();
     let data = {
       email,
       senha,
@@ -42,6 +56,7 @@ export default function Login() {
             routes: [{ name: "Home" }],
           });
         } else {
+          setLoading(false);
           setMensagem("Acesso negado, verifique usuário e senha.");
           setTimeout(() => {
             setMensagem(null);
@@ -93,11 +108,19 @@ export default function Login() {
         </View>
         <Text style={styles.forgotText}>Esqueci a senha</Text>
         <Text style={styles.errorText}>{mensagem}</Text>
-        <TouchableOpacity style={styles.button} onPress={logar}>
-          <Text style={styles.buttonText}>Entrar</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.buttonRegister}>
+        {loading ? (
+          <>
+            <Loading />
+          </>
+        ) : (
+          <>
+            <ButtonEntrar onPress={logar} />
+          </>
+        )}
+        <TouchableOpacity
+          style={styles.buttonRegister}
+          onPress={irParaCadastro}
+        >
           <Text style={styles.registerText}>
             Não possui uma conta? Cadastre-se
           </Text>
@@ -183,7 +206,7 @@ const styles = StyleSheet.create({
   },
   passwordIcon: {
     position: "absolute",
-    paddingTop: 10,
+    paddingTop: 5,
     right: 10,
   },
 });

@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.luizqos500.frontendparecar"
     },
     "android": {
       "config": {
@@ -25,7 +26,10 @@
       },
       "permissions": [
         "ACCESS_FINE_LOCATION",
-        "LOCATION"
+        "LOCATION",
+        "INTERNET",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
