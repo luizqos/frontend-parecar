@@ -132,7 +132,7 @@ export default function CadastroUsuario() {
         />
         <View style={styles.containerForm}>
           {selectedId === "1" ? (
-            <View style={styles.containerCliente}>
+            <View style={styles.containerCadastro}>
               <CadastroCliente
                 nome={nome}
                 cpf={cpf}
@@ -162,7 +162,7 @@ export default function CadastroUsuario() {
               )}
             </View>
           ) : (
-            <View style={styles.containerEstacionamento}>
+            <View style={styles.containerCadastro}>
               <CadastroEstacionamento
                 cnpj={cnpj}
                 setCnpj={setCnpj}
@@ -217,11 +217,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFBE00",
   },
-  containerCliente: {
-    height: height / 1.3,
-  },
-  containerEstacionamento: {
-    height: height * 1.5,
+  containerCadastro: {
+    flex: 1,
+    flexGrow: 1,
+    minHeight: height * 0.8,
   },
   radioButton: {
     marginBottom: 10,

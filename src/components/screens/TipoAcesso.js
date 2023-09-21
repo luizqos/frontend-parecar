@@ -9,7 +9,7 @@ export default function TipoAcesso({
 }) {
   return (
     <View style={styles.containerTipo}>
-      <Text style={styles.title}>Crie seu acesso</Text>
+      <Text style={styles.message}>Crie seu acesso</Text>
       <Text style={styles.subtitle}>Selecione seu tipo de acesso</Text>
       <RadioGroup
         radioButtons={radioButtons}
@@ -33,6 +33,11 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat_700Bold",
     padding: 5,
     marginTop: 16,
+  },
+  message: {
+    fontSize: 24,
+    fontFamily: "Montserrat_700Bold",
+    color: "black",
   },
   subtitle: {
     fontSize: 16,

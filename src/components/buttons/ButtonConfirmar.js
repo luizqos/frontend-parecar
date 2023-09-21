@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     marginRight: "auto",
     marginTop: 15,
+    marginBottom: 15,
     alignItems: "center",
     justifyContent: "center",
   },

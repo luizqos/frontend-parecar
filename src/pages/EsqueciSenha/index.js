@@ -36,11 +36,7 @@ export default function Login() {
     setEmail(inputText.toLowerCase());
   };
 
-  const irParaCadastro = () => {
-    navigation.navigate("CadastroUsuario");
-  };
-
-  function logar() {
+  function confirmar() {
     startLoading();
     let data = {
       email,
@@ -48,16 +44,15 @@ export default function Login() {
     };
 
     usuarioService
-      .login(data)
+      .alteraSenha(data)
       .then((response) => {
         if (response) {
           navigation.reset({
             index: 0,
-            routes: [{ name: "Home" }],
+            routes: [{ name: "Welcome" }],
           });
         } else {
           setLoading(false);
-          setMensagem("Acesso negado, verifique usuário e senha.");
           setTimeout(() => {
             setMensagem(null);
           }, 5000);
@@ -70,7 +65,6 @@ export default function Login() {
   return (
     <View style={styles.container}>
       <Animatable.View animation="fadeInLeft" style={styles.containerHeader}>
-        <Text style={styles.message}>Como esqueceu a senha?</Text>
         <Text style={styles.message}>
           Preencha os dados e redefina sua senha
         </Text>
@@ -109,24 +103,6 @@ export default function Login() {
             />
           </TouchableOpacity>
         </View>
-        <View>
-          <TextInput
-            placeholder="Confirme sua senha"
-            secureTextEntry={!mostraSenha}
-            value={senha}
-            style={styles.input}
-          />
-          <TouchableOpacity
-            onPress={togglePasswordVisibility}
-            style={styles.passwordIcon}
-          >
-            <MaterialCommunityIcons
-              name={mostraSenha ? "eye-off" : "eye"}
-              size={30}
-              color="gray"
-            />
-          </TouchableOpacity>
-        </View>
         <Text style={styles.errorText}>{mensagem}</Text>
         {loading ? (
           <>
@@ -134,7 +110,7 @@ export default function Login() {
           </>
         ) : (
           <>
-            <ButtonConfirmar onPress={logar} />
+            <ButtonConfirmar onPress={confirmar} />
           </>
         )}
       </Animatable.View>
