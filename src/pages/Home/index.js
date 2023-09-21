@@ -43,50 +43,30 @@ export default function Home() {
       }
     );
   }
-  const requestLocationPermission = async () => {
-    try {
-      setMensagem("Estamos buscando sua localização");
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        getLocation();
-      } else {
-        setMensagem("Permissão a localização não foi concedida");
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
 
   useEffect(() => {
+    const requestLocationPermission = async () => {
+      try {
+        setMensagem("Estamos buscando sua localização");
+
+        const granted = await PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        );
+
+        if (granted) getLocation();
+        else setMensagem("Permissão a localização não foi concedida");
+      } catch (err) {
+        console.log(JSON.stringify(err));
+        console.warn(err);
+      }
+    };
+
     if (Platform.OS === "android") {
       requestLocationPermission();
     }
   }, []);
 
-  useEffect(() => {
-    watchPositionAsync(
-      {
-        accuracy: LocationAccuracy.Highest,
-        timeInterval: 1000,
-        distanceInterval: 1,
-      },
-      (response) => {
-        setLocation(response);
-        setinitialRegion({
-          latitude: response.coords.latitude,
-          longitude: response.coords.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        });
-        setMarker({
-          latitude: -19.9298306,
-          longitude: -44.0589185,
-        });
-      }
-    );
-  }, []);
+  console.log(location);
   return (
     <View style={styles.container}>
       {location && initialRegion ? (
