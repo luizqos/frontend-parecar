@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { watchPositionAsync, LocationAccuracy } from "expo-location";
-import * as LocationExpo from "expo-location";
 
 import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
@@ -44,70 +43,30 @@ export default function Home() {
       }
     );
   }
-  const requestLocationPermission = async () => {
-    try {
-      setMensagem("Estamos buscando sua localização");
-
-      const result = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-      );
-      console.log({ result });
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-      );
-      const teste = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION
-      );
-      console.log(teste);
-      const teste2 = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION
-      );
-      console.log(teste2);
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        getLocation();
-      } else {
-        setMensagem("Permissão a localização não foi concedida");
-      }
-    } catch (err) {
-      console.log(JSON.stringify(err));
-      console.warn(err);
-    }
-  };
-
-  useEffect(async () => {
-    let { status } = await LocationExpo.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      setMensagem("Permission to access location was denied");
-      return;
-    }
-
-    if (Platform.OS === "android") {
-      await requestLocationPermission();
-    }
-  }, []);
 
   useEffect(() => {
-    watchPositionAsync(
-      {
-        accuracy: LocationAccuracy.Highest,
-        timeInterval: 1000,
-        distanceInterval: 1,
-      },
-      (response) => {
-        setLocation(response);
-        setinitialRegion({
-          latitude: response.coords.latitude,
-          longitude: response.coords.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        });
-        setMarker({
-          latitude: -19.9298306,
-          longitude: -44.0589185,
-        });
+    const requestLocationPermission = async () => {
+      try {
+        setMensagem("Estamos buscando sua localização");
+
+        const granted = await PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        );
+
+        if (granted) getLocation();
+        else setMensagem("Permissão a localização não foi concedida");
+      } catch (err) {
+        console.log(JSON.stringify(err));
+        console.warn(err);
       }
-    );
+    };
+
+    if (Platform.OS === "android") {
+      requestLocationPermission();
+    }
   }, []);
+
+  console.log(location);
   return (
     <View style={styles.container}>
       {location && initialRegion ? (
