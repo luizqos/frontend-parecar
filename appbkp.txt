@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "Parecar",
+    "slug": "frontend-parecar",
+    "version": "1.0.2",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFBE00"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.luizqos500.frontendparecar"
+    },
+    "android": {
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCiSR-itPpBtfKDoZC96k0vQOGKF6qsmEk"
+        }
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "LOCATION",
+        "INTERNET",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFBE00"
+      },
+      "package": "com.luizqos500.frontendparecar"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "82e694c1-2e9e-4df8-9456-b073de489c50"
+      }
+    }
+  }
+}
