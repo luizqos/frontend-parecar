@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     height: height / 1.3,
   },
   containerEstacionamento: {
-    height: height * 1.15,
+    height: height * 1.5,
   },
   radioButton: {
     marginBottom: 10,

@@ -6,6 +6,7 @@ import Login from "../pages/Login";
 import Home from "../pages/Home";
 import Cadastro from "../pages/Cadastro";
 import CadastroUsuario from "../pages/CadastroUsuario";
+import EsqueciSenha from "../pages/EsqueciSenha";
 
 import BottonNew from "../components/buttons/ButtonNew";
 
@@ -119,6 +120,11 @@ export default function Routes() {
       <Stack.Screen
         name="CadastroUsuario"
         component={CadastroUsuario}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="EsqueciSenha"
+        component={EsqueciSenha}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
