@@ -9,13 +9,12 @@ import {
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { watchPositionAsync, LocationAccuracy } from "expo-location";
-
+import Loading from "../../components/Loading";
 import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
 const { width, height } = Dimensions.get("screen");
 
 export default function Home() {
-  const [location, setLocation] = useState(null);
   const [marker, setMarker] = useState(null);
   const [initialRegion, setinitialRegion] = useState(null);
   const [mensagem, setMensagem] = useState("Aguarde");
@@ -29,7 +28,6 @@ export default function Home() {
         distanceInterval: 1,
       },
       (response) => {
-        setLocation(response);
         setinitialRegion({
           latitude: response.coords.latitude,
           longitude: response.coords.longitude,
@@ -43,32 +41,34 @@ export default function Home() {
       }
     );
   }
+  const requestLocationPermission = async () => {
+    try {
+      setMensagem("Estamos buscando sua localização");
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        getLocation();
+      } else {
+        setMensagem("Permissão a localização não foi concedida");
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
 
   useEffect(() => {
-    const requestLocationPermission = async () => {
-      try {
-        setMensagem("Estamos buscando sua localização");
-
-        const granted = await PermissionsAndroid.check(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-        );
-
-        if (granted) getLocation();
-        else setMensagem("Permissão a localização não foi concedida");
-      } catch (err) {
-        console.log(JSON.stringify(err));
-        console.warn(err);
-      }
-    };
-
     if (Platform.OS === "android") {
       requestLocationPermission();
     }
   }, []);
 
+  useEffect(() => {
+    getLocation();
+  }, []);
   return (
     <View style={styles.container}>
-      {location && initialRegion ? (
+      {initialRegion ? (
         <MapView
           style={styles.map}
           initialRegion={initialRegion}
@@ -87,6 +87,7 @@ export default function Home() {
             resizeMode="contain"
           />
           <Text style={styles.textoLoading}>{mensagem}</Text>
+          <Loading />
         </View>
       )}
     </View>
