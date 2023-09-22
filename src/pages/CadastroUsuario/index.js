@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { View, Text, ScrollView, StyleSheet, Dimensions } from "react-native";
+import * as Animatable from "react-native-animatable";
 import Loading from "../../components/Loading";
 import ButtonCadastrar from "../../components/buttons/ButtonCadastrar";
 import TipoAcesso from "../../components/screens/TipoAcesso";
@@ -125,14 +126,20 @@ export default function CadastroUsuario() {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <TipoAcesso
-          radioButtons={radioButtons}
-          selectedId={selectedId}
-          setSelectedId={setSelectedId}
-        />
-        <View style={styles.containerForm}>
+        <Animatable.View animation="fadeInLeft">
+          <TipoAcesso
+            radioButtons={radioButtons}
+            selectedId={selectedId}
+            setSelectedId={setSelectedId}
+          />
+        </Animatable.View>
+        <Animatable.View
+          delay={500}
+          animation="fadeInUp"
+          style={styles.containerForm}
+        >
           {selectedId === "1" ? (
-            <View style={styles.containerCliente}>
+            <View style={styles.containerCadastro}>
               <CadastroCliente
                 nome={nome}
                 cpf={cpf}
@@ -162,7 +169,7 @@ export default function CadastroUsuario() {
               )}
             </View>
           ) : (
-            <View style={styles.containerEstacionamento}>
+            <View style={styles.containerCadastro}>
               <CadastroEstacionamento
                 cnpj={cnpj}
                 setCnpj={setCnpj}
@@ -207,7 +214,7 @@ export default function CadastroUsuario() {
               )}
             </View>
           )}
-        </View>
+        </Animatable.View>
       </ScrollView>
     </View>
   );
@@ -217,11 +224,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFBE00",
   },
-  containerCliente: {
-    height: height / 1.3,
-  },
-  containerEstacionamento: {
-    height: height * 1.15,
+  containerCadastro: {
+    flex: 1,
+    flexGrow: 1,
+    minHeight: height * 0.8,
   },
   radioButton: {
     marginBottom: 10,

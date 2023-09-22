@@ -66,7 +66,6 @@ export default function Home() {
     }
   }, []);
 
-  console.log(location);
   return (
     <View style={styles.container}>
       {location && initialRegion ? (

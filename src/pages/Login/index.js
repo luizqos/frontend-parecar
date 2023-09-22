@@ -39,6 +39,9 @@ export default function Login() {
   const irParaCadastro = () => {
     navigation.navigate("CadastroUsuario");
   };
+  const irParaEsqueciSenha = () => {
+    navigation.navigate("EsqueciSenha");
+  };
 
   function logar() {
     startLoading();
@@ -106,7 +109,9 @@ export default function Login() {
             />
           </TouchableOpacity>
         </View>
-        <Text style={styles.forgotText}>Esqueci a senha</Text>
+        <TouchableOpacity onPress={irParaEsqueciSenha}>
+          <Text style={styles.forgotText}>Esqueci a senha</Text>
+        </TouchableOpacity>
         <Text style={styles.errorText}>{mensagem}</Text>
         {loading ? (
           <>
