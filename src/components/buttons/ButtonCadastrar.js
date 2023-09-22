@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-export default function ButtonCadastrarr({ onPress }) {
+export default function ButtonCadastrar({ onPress }) {
   return (
     <View>
       <TouchableOpacity style={styles.button} onPress={onPress}>
@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     marginRight: "auto",
     marginTop: 15,
+    marginBottom: 15,
     alignItems: "center",
     justifyContent: "center",
   },
