@@ -28,6 +28,7 @@ export default function Home() {
   }
   useEffect(() => {
     getLocation();
+    setMensagem(Math.floor(Math.random() * (999 - 1 + 1) + 1));
     const intervalId = setInterval(getLocation, 15000);
     return () => {
       clearInterval(intervalId);
