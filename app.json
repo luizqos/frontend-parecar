@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "parecar-v2",
-    "slug": "parecar-v2",
+    "name": "parecar",
+    "slug": "parecar",
     "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,7 +10,7 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+          "isAndroidBackgroundLocationEnabled": true
         }
       ]
     ],
@@ -24,7 +24,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.jeansouza20k.parecarv2"
+      "bundleIdentifier": "com.luizantonio500.parecar"
     },
     "android": {
       "config": {
@@ -34,6 +34,7 @@
       },
       "permissions": [
         "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
         "LOCATION",
         "INTERNET",
         "READ_EXTERNAL_STORAGE",
@@ -43,14 +44,14 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFBE00"
       },
-      "package": "com.jeansouza20k.parecarv2"
+      "package": "com.luizantonio500.parecar"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "8d309a60-94e6-4239-bd1f-35b9e20f5ca1"
+        "projectId": "06b8fffe-bc24-44b3-afc5-6ed2ebc6b83f"
       }
     }
   }

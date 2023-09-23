@@ -1,77 +1,49 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  PermissionsAndroid,
-  Platform,
-  Dimensions,
-} from "react-native";
+import { View, StyleSheet, Text, Dimensions } from "react-native";
 import * as Animatable from "react-native-animatable";
-import { watchPositionAsync, LocationAccuracy } from "expo-location";
+import * as Location from "expo-location";
 import Loading from "../../components/Loading";
 import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
 const { width, height } = Dimensions.get("screen");
 
 export default function Home() {
-  const [marker, setMarker] = useState(null);
-  const [initialRegion, setinitialRegion] = useState(null);
-  const [mensagem, setMensagem] = useState("Aguarde");
+  const [marker, setMarker] = useState({
+    latitude: -19.9298306,
+    longitude: -44.0589185,
+  });
+  const [location, setLocation] = useState(null);
+  const [mensagem, setMensagem] = useState("Estamos buscando sua localização");
   const navigation = useNavigation();
 
   async function getLocation() {
-    watchPositionAsync(
-      {
-        accuracy: LocationAccuracy.Highest,
-        timeInterval: 1000,
-        distanceInterval: 1,
-      },
-      (response) => {
-        setinitialRegion({
-          latitude: response.coords.latitude,
-          longitude: response.coords.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        });
-        setMarker({
-          latitude: -19.9298306,
-          longitude: -44.0589185,
-        });
-      }
-    );
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      setMensagem("Sem permissão de acesso a localização");
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    setLocation(location);
   }
-  const requestLocationPermission = async () => {
-    try {
-      setMensagem("Estamos buscando sua localização");
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        getLocation();
-      } else {
-        setMensagem("Permissão a localização não foi concedida");
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
-
-  useEffect(() => {
-    if (Platform.OS === "android") {
-      requestLocationPermission();
-    }
-  }, []);
-
   useEffect(() => {
     getLocation();
+    const intervalId = setInterval(getLocation, 15000);
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
   return (
     <View style={styles.container}>
-      {initialRegion ? (
+      {location ? (
         <MapView
           style={styles.map}
-          initialRegion={initialRegion}
+          initialRegion={{
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
           zoomEnabled={true}
           showsUserLocation={true}
           loadingEnabled={true}
