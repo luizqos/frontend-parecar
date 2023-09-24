@@ -77,7 +77,6 @@ export default function Home() {
   }, []);
   return (
     <View style={styles.container}>
-      <Text style={styles.textoLoading}>{mensagem}</Text>
       {initialRegion && isPermited ? (
         <MapView
           style={styles.map}
