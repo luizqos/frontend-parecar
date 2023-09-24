@@ -24,25 +24,23 @@ export default function Home() {
     latitude: -19.9298306,
     longitude: -44.0589185,
   });
-  const [location, setLocation] = useState(null);
   const [initialRegion, setinitialRegion] = useState(null);
   const [mensagem, setMensagem] = useState("Estamos buscando sua localização");
   const navigation = useNavigation();
 
-  async function requestLocationPermissions() {
+  async function permissaoLocalizacaoSegundoPlano() {
     const { granted } = await requestBackgroundPermissionsAsync();
     if (granted) {
       await getCurrentPositionAsync();
     }
   }
-
-  const requestLocationPermission = async () => {
+  const permissaoLocalizacao = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("Permissão concedida");
+        permissaoLocalizacaoSegundoPlano();
       } else {
         console.log("Permissão negada");
       }
@@ -50,15 +48,10 @@ export default function Home() {
       console.warn(err);
     }
   };
-
   useEffect(() => {
     if (Platform.OS === "android") {
-      requestLocationPermission();
+      permissaoLocalizacao();
     }
-  }, []);
-
-  useEffect(() => {
-    requestLocationPermissions();
   }, []);
 
   useEffect(() => {
@@ -69,33 +62,19 @@ export default function Home() {
         distanceInterval: 1,
       },
       (response) => {
-        setLocation(response);
         setinitialRegion({
           latitude: response.coords.latitude,
           longitude: response.coords.longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         });
-        setMarker({
-          latitude: -19.9298306,
-          longitude: -44.0589185,
-        });
       }
     );
   }, []);
   return (
     <View style={styles.container}>
-      {location ? (
+      {initialRegion ? (
         <MapView
-          onMapReady={() => {
-            Platform.OS === "android"
-              ? PermissionsAndroid.request(
-                  PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-                ).then(() => {
-                  setMensagem("Acesso a localização foi concedido");
-                })
-              : "";
-          }}
           style={styles.map}
           region={initialRegion}
           zoomEnabled={true}

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "parecar",
-    "slug": "parecar",
+    "name": "Parecar",
+    "slug": "parecar-v2",
     "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,7 +24,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.luizantonio500.parecar"
+      "bundleIdentifier": "com.jean-souza20k.parecar-v2"
     },
     "android": {
       "config": {
@@ -47,14 +47,14 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFBE00"
       },
-      "package": "com.luizantonio500.parecar"
+      "package": "com.jeansouza20k.parecarv2"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "06b8fffe-bc24-44b3-afc5-6ed2ebc6b83f"
+        "projectId": "8d309a60-94e6-4239-bd1f-35b9e20f5ca1"
       }
     }
   }
