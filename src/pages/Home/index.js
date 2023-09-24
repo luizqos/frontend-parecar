@@ -1,7 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, Dimensions } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  PermissionsAndroid,
+  Platform,
+  Dimensions,
+} from "react-native";
 import * as Animatable from "react-native-animatable";
-import * as Location from "expo-location";
+import {
+  requestBackgroundPermissionsAsync,
+  getCurrentPositionAsync,
+  watchPositionAsync,
+  LocationAccuracy,
+} from "expo-location";
 import Loading from "../../components/Loading";
 import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
@@ -13,38 +25,79 @@ export default function Home() {
     longitude: -44.0589185,
   });
   const [location, setLocation] = useState(null);
+  const [initialRegion, setinitialRegion] = useState(null);
   const [mensagem, setMensagem] = useState("Estamos buscando sua localização");
   const navigation = useNavigation();
 
-  async function getLocation() {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      setMensagem("Sem permissão de acesso a localização");
-      return;
+  async function requestLocationPermissions() {
+    const { granted } = await requestBackgroundPermissionsAsync();
+    if (granted) {
+      await getCurrentPositionAsync();
     }
-
-    let location = await Location.getCurrentPositionAsync({});
-    setLocation(location);
   }
+
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("Permissão concedida");
+      } else {
+        console.log("Permissão negada");
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
   useEffect(() => {
-    getLocation();
-    setMensagem(Math.floor(Math.random() * (999 - 1 + 1) + 1));
-    const intervalId = setInterval(getLocation, 15000);
-    return () => {
-      clearInterval(intervalId);
-    };
+    if (Platform.OS === "android") {
+      requestLocationPermission();
+    }
+  }, []);
+
+  useEffect(() => {
+    requestLocationPermissions();
+  }, []);
+
+  useEffect(() => {
+    watchPositionAsync(
+      {
+        accuracy: LocationAccuracy.Highest,
+        timeInterval: 1000,
+        distanceInterval: 1,
+      },
+      (response) => {
+        setLocation(response);
+        setinitialRegion({
+          latitude: response.coords.latitude,
+          longitude: response.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        });
+        setMarker({
+          latitude: -19.9298306,
+          longitude: -44.0589185,
+        });
+      }
+    );
   }, []);
   return (
     <View style={styles.container}>
       {location ? (
         <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+          onMapReady={() => {
+            Platform.OS === "android"
+              ? PermissionsAndroid.request(
+                  PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+                ).then(() => {
+                  setMensagem("Acesso a localização foi concedido");
+                })
+              : "";
           }}
+          style={styles.map}
+          region={initialRegion}
           zoomEnabled={true}
           showsUserLocation={true}
           loadingEnabled={true}

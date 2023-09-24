@@ -10,8 +10,7 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
-          "isAndroidBackgroundLocationEnabled": true
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ]
     ],
@@ -36,7 +35,10 @@
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_BACKGROUND_LOCATION",
+        "ACCESS_COARSE_LOCATION",
         "LOCATION",
+        "FOREGROUND_SERVICE",
+        "WAKE_LOCK",
         "INTERNET",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
