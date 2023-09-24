@@ -25,6 +25,7 @@ export default function Home() {
     longitude: -44.0589185,
   });
   const [initialRegion, setinitialRegion] = useState(null);
+  const [isPermited, setIsPermited] = useState(false);
   const [mensagem, setMensagem] = useState("Estamos buscando sua localização");
   const navigation = useNavigation();
 
@@ -32,6 +33,7 @@ export default function Home() {
     const { granted } = await requestBackgroundPermissionsAsync();
     if (granted) {
       await getCurrentPositionAsync();
+      setIsPermited(true);
     }
   }
   const permissaoLocalizacao = async () => {
@@ -55,25 +57,28 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    watchPositionAsync(
-      {
-        accuracy: LocationAccuracy.Highest,
-        timeInterval: 1000,
-        distanceInterval: 1,
-      },
-      (response) => {
-        setinitialRegion({
-          latitude: response.coords.latitude,
-          longitude: response.coords.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        });
-      }
-    );
+    if (isPermited) {
+      watchPositionAsync(
+        {
+          accuracy: LocationAccuracy.Highest,
+          timeInterval: 1000,
+          distanceInterval: 1,
+        },
+        (response) => {
+          setinitialRegion({
+            latitude: response.coords.latitude,
+            longitude: response.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          });
+        }
+      );
+    }
   }, []);
   return (
     <View style={styles.container}>
-      {initialRegion ? (
+      <Text style={styles.textoLoading}>{mensagem}</Text>
+      {initialRegion && isPermited ? (
         <MapView
           style={styles.map}
           region={initialRegion}
