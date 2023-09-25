@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-export default function ButtonEntrar({ onPress }) {
+export default function ButtonConfirmar({ onPress }) {
   return (
     <View>
       <TouchableOpacity style={styles.button} onPress={onPress}>
-        <Text style={styles.buttonText}>Entrar</Text>
+        <Text style={styles.buttonText}>Confirmar</Text>
       </TouchableOpacity>
     </View>
   );
