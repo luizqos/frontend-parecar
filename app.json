@@ -1,11 +1,19 @@
 {
   "expo": {
     "name": "Parecar",
-    "slug": "frontend-parecar",
+    "slug": "parecar",
     "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+    ],
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -16,7 +24,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.luizqos500.frontendparecar"
+      "bundleIdentifier": "com.luizgz500.parecar"
     },
     "android": {
       "config": {
@@ -26,7 +34,11 @@
       },
       "permissions": [
         "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "ACCESS_COARSE_LOCATION",
         "LOCATION",
+        "FOREGROUND_SERVICE",
+        "WAKE_LOCK",
         "INTERNET",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
@@ -35,14 +47,14 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFBE00"
       },
-      "package": "com.luizqos500.frontendparecar"
+      "package": "com.luizgz500.parecar"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "82e694c1-2e9e-4df8-9456-b073de489c50"
+        "projectId": "153a0e8b-a116-47b8-b396-f2468f7ca04a"
       }
     }
   }
