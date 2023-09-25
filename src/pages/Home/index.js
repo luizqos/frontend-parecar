@@ -8,91 +8,92 @@ import {
   Dimensions,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
-import { watchPositionAsync, LocationAccuracy } from "expo-location";
-
+import {
+  requestBackgroundPermissionsAsync,
+  getCurrentPositionAsync,
+  watchPositionAsync,
+  LocationAccuracy,
+} from "expo-location";
+import Loading from "../../components/Loading";
 import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
 const { width, height } = Dimensions.get("screen");
 
 export default function Home() {
-  const [location, setLocation] = useState(null);
-  const [marker, setMarker] = useState(null);
+  const [marker, setMarker] = useState({
+    latitude: -19.9298306,
+    longitude: -44.0589185,
+  });
   const [initialRegion, setinitialRegion] = useState(null);
-  const [mensagem, setMensagem] = useState("Aguarde");
+  const [isPermited, setIsPermited] = useState(false);
+  const [mensagem, setMensagem] = useState("Estamos buscando sua localização");
   const navigation = useNavigation();
 
-  async function getLocation() {
-    watchPositionAsync(
-      {
-        accuracy: LocationAccuracy.Highest,
-        timeInterval: 1000,
-        distanceInterval: 1,
-      },
-      (response) => {
-        setLocation(response);
-        setinitialRegion({
-          latitude: response.coords.latitude,
-          longitude: response.coords.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        });
-        setMarker({
-          latitude: -19.9298306,
-          longitude: -44.0589185,
-        });
-      }
-    );
-  }
-  const requestLocationPermission = async () => {
+  const permissaoLocalizacaoSegundoPlano = async () => {
     try {
-      setMensagem("Estamos buscando sua localização");
+      const { granted } = await requestBackgroundPermissionsAsync();
+      if (granted) {
+        await getCurrentPositionAsync();
+        getLocation();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const permissaoLocalizacao = async () => {
+    try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        setIsPermited(true);
         getLocation();
+        permissaoLocalizacaoSegundoPlano();
+        setMensagem("Permissão concedida");
       } else {
-        setMensagem("Permissão a localização não foi concedida");
+        setMensagem("Permissão negada");
+        console.log("Permissão negada");
       }
     } catch (err) {
       console.warn(err);
     }
   };
 
-  useEffect(() => {
-    if (Platform.OS === "android") {
-      requestLocationPermission();
+  const getLocation = async () => {
+    setMensagem("Buscando sua localização");
+    try {
+      watchPositionAsync(
+        {
+          accuracy: LocationAccuracy.Highest,
+          timeInterval: 3000,
+          distanceInterval: 500,
+        },
+        (response) => {
+          setinitialRegion({
+            latitude: response.coords.latitude,
+            longitude: response.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          });
+        }
+      );
+    } catch (err) {
+      setMensagem("Houve um erro ao buscar localização");
+      console.warn(err);
     }
-  }, []);
+  };
 
   useEffect(() => {
-    watchPositionAsync(
-      {
-        accuracy: LocationAccuracy.Highest,
-        timeInterval: 1000,
-        distanceInterval: 1,
-      },
-      (response) => {
-        setLocation(response);
-        setinitialRegion({
-          latitude: response.coords.latitude,
-          longitude: response.coords.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        });
-        setMarker({
-          latitude: -19.9298306,
-          longitude: -44.0589185,
-        });
-      }
-    );
+    if (Platform.OS === "android") {
+      permissaoLocalizacao();
+    }
   }, []);
   return (
     <View style={styles.container}>
-      {location && initialRegion ? (
+      {initialRegion && isPermited ? (
         <MapView
           style={styles.map}
-          initialRegion={initialRegion}
+          region={initialRegion}
           zoomEnabled={true}
           showsUserLocation={true}
           loadingEnabled={true}
@@ -108,6 +109,7 @@ export default function Home() {
             resizeMode="contain"
           />
           <Text style={styles.textoLoading}>{mensagem}</Text>
+          <Loading />
         </View>
       )}
     </View>

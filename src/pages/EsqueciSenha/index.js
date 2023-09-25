@@ -11,7 +11,7 @@ import * as Animatable from "react-native-animatable";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../../components/Loading";
-import ButtonEntrar from "../../components/buttons/ButtonEntrar";
+import ButtonConfirmar from "../../components/buttons/ButtonConfirmar";
 import usuarioService from "../../services/UsuarioService";
 
 export default function Login() {
@@ -36,14 +36,7 @@ export default function Login() {
     setEmail(inputText.toLowerCase());
   };
 
-  const irParaCadastro = () => {
-    navigation.navigate("CadastroUsuario");
-  };
-  const irParaEsqueciSenha = () => {
-    navigation.navigate("EsqueciSenha");
-  };
-
-  function logar() {
+  function confirmar() {
     startLoading();
     let data = {
       email,
@@ -51,16 +44,15 @@ export default function Login() {
     };
 
     usuarioService
-      .login(data)
+      .alteraSenha(data)
       .then((response) => {
         if (response) {
           navigation.reset({
             index: 0,
-            routes: [{ name: "Home" }],
+            routes: [{ name: "Welcome" }],
           });
         } else {
           setLoading(false);
-          setMensagem("Acesso negado, verifique usuário e senha.");
           setTimeout(() => {
             setMensagem(null);
           }, 5000);
@@ -73,7 +65,9 @@ export default function Login() {
   return (
     <View style={styles.container}>
       <Animatable.View animation="fadeInLeft" style={styles.containerHeader}>
-        <Text style={styles.message}>Bem Vindo(a)</Text>
+        <Text style={styles.message}>
+          Preencha os dados e redefina sua senha
+        </Text>
       </Animatable.View>
 
       <Animatable.View
@@ -109,9 +103,6 @@ export default function Login() {
             />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={irParaEsqueciSenha}>
-          <Text style={styles.forgotText}>Esqueci a senha</Text>
-        </TouchableOpacity>
         <Text style={styles.errorText}>{mensagem}</Text>
         {loading ? (
           <>
@@ -119,17 +110,9 @@ export default function Login() {
           </>
         ) : (
           <>
-            <ButtonEntrar onPress={logar} />
+            <ButtonConfirmar onPress={confirmar} />
           </>
         )}
-        <TouchableOpacity
-          style={styles.buttonRegister}
-          onPress={irParaCadastro}
-        >
-          <Text style={styles.registerText}>
-            Não possui uma conta? Cadastre-se
-          </Text>
-        </TouchableOpacity>
       </Animatable.View>
     </View>
   );
