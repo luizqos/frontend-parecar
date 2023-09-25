@@ -14,7 +14,7 @@ class UsuarioService {
     );
 
     try {
-      const response = await axios.post(Config.API_URL + "/login/auth", data, {
+      const response = await axios.post(`${Config.API_URL}/login/auth`, data, {
         timeout: Config.TIMEOUT_REQUEST,
         headers: Config.HEADER_REQUEST,
       });
@@ -37,7 +37,7 @@ class UsuarioService {
       }
     );
     try {
-      const response = await axios.post(Config.API_URL + "/" + endpoint, data, {
+      const response = await axios.post(`${Config.API_URL}/${endpoint}`, data, {
         timeout: Config.TIMEOUT_REQUEST,
         headers: Config.HEADER_REQUEST,
       });
@@ -45,6 +45,46 @@ class UsuarioService {
       return Promise.resolve(cliente);
     } catch (error) {
       console.log(error);
+      return false;
+    }
+  }
+
+  async alteraSenha(data) {
+    try {
+      const buscaLogin = await axios.get(`${Config.API_URL}/login`, {
+        timeout: Config.TIMEOUT_REQUEST,
+        headers: Config.HEADER_REQUEST,
+        params: {
+          email: data.email,
+        },
+      });
+
+      if (buscaLogin.data.length === 0) {
+        console.error("A resposta não contém dados válidos.");
+        return Promise.reject("Resposta vazia ou inválida");
+      }
+
+      const { id, tipo } = buscaLogin.data[0];
+      const endpoint =
+        tipo === "C" ? "clientes/altera-senha" : "estacionamentos/altera-senha";
+
+      const atualizaSenha = await axios.put(
+        `${Config.API_URL}/${endpoint}`,
+        {
+          senha: data.senha,
+        },
+        {
+          timeout: Config.TIMEOUT_REQUEST,
+          headers: Config.HEADER_REQUEST,
+          params: {
+            id: id,
+          },
+        }
+      );
+
+      return JSON.stringify(atualizaSenha.data);
+    } catch (error) {
+      console.error(error);
       return false;
     }
   }
