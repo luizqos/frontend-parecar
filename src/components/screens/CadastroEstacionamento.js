@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -99,7 +99,7 @@ export default function CadastroEstacionamento({
         >
           <MaterialCommunityIcons
             name={mostraSenha ? "eye-off" : "eye"}
-            size={20}
+            size={30}
             color="gray"
           />
         </TouchableOpacity>
@@ -179,18 +179,18 @@ export default function CadastroEstacionamento({
 }
 const styles = StyleSheet.create({
   titleItemForm: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: "Montserrat_700Bold",
-    padding: 3,
+    padding: 5,
     marginTop: 10,
   },
   input: {
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255, 190, 0, 0.3)",
-    height: 20,
+    height: 30,
     fontFamily: "Montserrat_400Regular",
-    marginBottom: 6,
-    fontSize: 14,
+    marginBottom: 8,
+    fontSize: 16,
   },
   passwordIcon: {
     position: "absolute",
