@@ -29,40 +29,44 @@ export default function Home() {
   const [mensagem, setMensagem] = useState("Estamos buscando sua localização");
   const navigation = useNavigation();
 
-  async function permissaoLocalizacaoSegundoPlano() {
-    const { granted } = await requestBackgroundPermissionsAsync();
-    if (granted) {
-      await getCurrentPositionAsync();
-      setIsPermited(true);
+  const permissaoLocalizacaoSegundoPlano = async () => {
+    try {
+      const { granted } = await requestBackgroundPermissionsAsync();
+      if (granted) {
+        await getCurrentPositionAsync();
+        getLocation();
+      }
+    } catch (error) {
+      console.log(error);
     }
-  }
+  };
   const permissaoLocalizacao = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        setIsPermited(true);
+        getLocation();
         permissaoLocalizacaoSegundoPlano();
+        setMensagem("Permissão concedida");
       } else {
+        setMensagem("Permissão negada");
         console.log("Permissão negada");
       }
     } catch (err) {
       console.warn(err);
     }
   };
-  useEffect(() => {
-    if (Platform.OS === "android") {
-      permissaoLocalizacao();
-    }
-  }, []);
 
-  useEffect(() => {
-    if (isPermited) {
+  const getLocation = async () => {
+    setMensagem("Buscando sua localização");
+    try {
       watchPositionAsync(
         {
           accuracy: LocationAccuracy.Highest,
-          timeInterval: 1000,
-          distanceInterval: 1,
+          timeInterval: 3000,
+          distanceInterval: 500,
         },
         (response) => {
           setinitialRegion({
@@ -73,6 +77,15 @@ export default function Home() {
           });
         }
       );
+    } catch (err) {
+      setMensagem("Houve um erro ao buscar localização");
+      console.warn(err);
+    }
+  };
+
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      permissaoLocalizacao();
     }
   }, []);
   return (
