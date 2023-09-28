@@ -64,25 +64,21 @@ class UsuarioService {
         return Promise.reject("Resposta vazia ou inválida");
       }
 
-      const { id, tipo } = buscaLogin.data[0];
-      const endpoint =
-        tipo === "C" ? "clientes/altera-senha" : "estacionamentos/altera-senha";
+      const { email } = buscaLogin.data[0];
+      const endpoint = "login/altera-senha";
 
-      const atualizaSenha = await axios.put(
+      const atualizaSenha = await axios.post(
         `${Config.API_URL}/${endpoint}`,
         {
+          email,
           senha: data.senha,
         },
         {
           timeout: Config.TIMEOUT_REQUEST,
           headers: Config.HEADER_REQUEST,
-          params: {
-            id: id,
-          },
         }
       );
-
-      return JSON.stringify(atualizaSenha.data);
+      return JSON.stringify(atualizaSenha.data.message);
     } catch (error) {
       console.error(error);
       return false;

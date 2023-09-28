@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
+import Toast from "react-native-toast-message";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../../components/Loading";
@@ -27,7 +27,13 @@ export default function Login() {
       setLoading(false);
     }, 5000);
   };
-
+  const showToast = (type, texto1, texto2) => {
+    Toast.show({
+      type: type,
+      text1: texto1,
+      text2: texto2,
+    });
+  };
   const togglePasswordVisibility = () => {
     setMostraSenha(!mostraSenha);
   };
@@ -47,11 +53,15 @@ export default function Login() {
       .alteraSenha(data)
       .then((response) => {
         if (response) {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "Welcome" }],
-          });
+          showToast("success", "Sucesso", response.replace(/"/g, ""));
+          setTimeout(() => {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Welcome" }],
+            });
+          }, 3000);
         } else {
+          showToast("error", "Erro", "Tente novamente.");
           setLoading(false);
           setTimeout(() => {
             setMensagem(null);
@@ -59,7 +69,8 @@ export default function Login() {
         }
       })
       .catch((error) => {
-        Alert.alert("Erro", "Tente novamente.");
+        showToast("error", "Erro", "Tente novamente.");
+        console.error(error);
       });
   }
   return (
@@ -103,7 +114,6 @@ export default function Login() {
             />
           </TouchableOpacity>
         </View>
-        <Text style={styles.errorText}>{mensagem}</Text>
         {loading ? (
           <>
             <Loading />
@@ -114,6 +124,7 @@ export default function Login() {
           </>
         )}
       </Animatable.View>
+      <Toast />
     </View>
   );
 }
