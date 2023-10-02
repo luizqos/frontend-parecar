@@ -41,6 +41,7 @@ export default function CadastroEstacionamento({
   setCidade,
   setEstado,
   togglePasswordVisibility,
+  checkCep,
 }) {
   return (
     <View>
@@ -124,6 +125,7 @@ export default function CadastroEstacionamento({
         placeholder="Digite o Cep"
         value={cep}
         onChangeText={(text) => setCep(text)}
+        onBlur={(text) => checkCep(text)}
       />
       <Text style={styles.titleItemForm}>Endereço</Text>
       <TextInput
