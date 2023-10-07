@@ -49,6 +49,27 @@ export default function CadastroUsuario() {
     } else textoConvertido = null;
     return textoConvertido;
   }
+
+  const checkCep = (cepValue) => {
+    const cep = cepValue._dispatchInstances.memoizedProps.value.replace(
+      /\D/g,
+      ""
+    );
+    if (cep.length === 8) {
+      fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (!data.erro) {
+            setEndereco(data.logradouro.toUpperCase());
+            setComplemento(data.complemento.toUpperCase());
+            setBairro(data.bairro.toUpperCase());
+            setCidade(data.localidade.toUpperCase());
+            setEstado(data.uf.toUpperCase());
+          }
+        });
+    }
+  };
+
   function cadastrar() {
     startLoading();
     let data = "";
@@ -201,6 +222,7 @@ export default function CadastroUsuario() {
                 setCidade={setCidade}
                 estado={estado}
                 setEstado={setEstado}
+                checkCep={checkCep}
               />
               <Text style={styles.errorText}>{mensagem}</Text>
               {loading ? (
