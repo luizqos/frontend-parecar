@@ -15,6 +15,7 @@ import {
   LocationAccuracy,
 } from "expo-location";
 import Loading from "../../components/Loading";
+import estacionamentoService from "../../services/EstacionamentoService";
 import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
 const { width, height } = Dimensions.get("screen");
@@ -25,9 +26,25 @@ export default function Home() {
     longitude: -44.0589185,
   });
   const [initialRegion, setinitialRegion] = useState(null);
+  const [markers, setMarkers] = useState([]);
   const [isPermited, setIsPermited] = useState(false);
   const [mensagem, setMensagem] = useState("Estamos buscando sua localização");
   const navigation = useNavigation();
+
+  function buscarEstacionamento() {
+    estacionamentoService
+      .buscaEstacionamento()
+      .then((response) => {
+        if (response) {
+          setMarkers(response);
+        } else {
+          setMensagem("Erro, não foi possível buscar estacionamentos.");
+        }
+      })
+      .catch((error) => {
+        console.error("Erro", "Tente novamente.", error);
+      });
+  }
 
   const permissaoLocalizacaoSegundoPlano = async () => {
     try {
@@ -88,9 +105,13 @@ export default function Home() {
       permissaoLocalizacao();
     }
   }, []);
+
+  useEffect(() => {
+    buscarEstacionamento();
+  }, []);
   return (
     <View style={styles.container}>
-      {initialRegion && isPermited ? (
+      {initialRegion && isPermited && !!markers.length ? (
         <MapView
           style={styles.map}
           region={initialRegion}
@@ -98,7 +119,16 @@ export default function Home() {
           showsUserLocation={true}
           loadingEnabled={true}
         >
-          <Marker coordinate={marker} title="Estacione Aqui" />
+          {markers.map((m) => (
+            <Marker
+              key={m.id}
+              coordinate={{
+                latitude: parseFloat(m.latitude),
+                longitude: parseFloat(m.longitude),
+              }}
+              title={m.razaosocial}
+            />
+          ))}
         </MapView>
       ) : (
         <View style={styles.containerLogo}>
@@ -115,6 +145,7 @@ export default function Home() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
