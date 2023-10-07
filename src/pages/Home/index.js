@@ -18,6 +18,7 @@ import Loading from "../../components/Loading";
 import estacionamentoService from "../../services/EstacionamentoService";
 import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
+import { Image } from "react-native";
 const { width, height } = Dimensions.get("screen");
 
 export default function Home() {
@@ -127,7 +128,12 @@ export default function Home() {
                 longitude: parseFloat(m.longitude),
               }}
               title={m.razaosocial}
-            />
+            >
+              <Image
+                source={require("../../assets/img/pinIcon.png")}
+                style={{ width: 30, height: 30, resizeMode: "contain" }}
+              />
+            </Marker>
           ))}
         </MapView>
       ) : (
