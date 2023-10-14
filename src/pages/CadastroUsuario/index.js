@@ -98,6 +98,23 @@ const schemaEstacionamento = yup.object().shape({
         return false;
       }
     }),
+  cep: yup.string().required("Cep é obrigatório").min(9, "Cep Incompleto"),
+  endereco: yup
+    .string()
+    .required("Endereço é obrigatório")
+    .min(3, "Endereço Incompleto"),
+  numero: yup.string().required("Número é obrigatório"),
+  complemento: yup.string(),
+  bairro: yup.string().required("Bairro é obrigatório"),
+  cidade: yup.string().required("Cidade é obrigatória"),
+  estado: yup
+    .string()
+    .uppercase()
+    .length(2, "Digite a UF com 2 digitos")
+    .matches(
+      /^(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)$/,
+      "UF inválida"
+    ),
 });
 
 export default function CadastroUsuario() {
@@ -106,21 +123,21 @@ export default function CadastroUsuario() {
   const [selectedId, setSelectedId] = useState("1");
   //const [cpf, setCpf] = useState("");
   //const [cnpj, setCnpj] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [cep, setCep] = useState("");
+  //const [telefone, setTelefone] = useState("");
+  //const [cep, setCep] = useState("");
   //const [nome, setNome] = useState("");
   //const [nomeResponsavel, setNomeResponsavel] = useState("");
   //const [nomeFantasia, setNomeFantasia] = useState("");
   //const [razaoSocial, setRazaoSocial] = useState("");
-  const [endereco, setEndereco] = useState("");
-  const [numero, setNumero] = useState("");
-  const [complemento, setComplemento] = useState("");
-  const [bairro, setBairro] = useState("");
-  const [cidade, setCidade] = useState("");
-  const [estado, setEstado] = useState("");
-  const [email, setEmail] = useState("");
-  //const [placa, setPlaca] = useState("");
-  const [senha, setSenha] = useState("");
+  // const [endereco, setEndereco] = useState("");
+  // const [numero, setNumero] = useState("");
+  // const [complemento, setComplemento] = useState("");
+  // const [bairro, setBairro] = useState("");
+  // const [cidade, setCidade] = useState("");
+  // const [estado, setEstado] = useState("");
+  // const [email, setEmail] = useState("");
+  // //const [placa, setPlaca] = useState("");
+  //const [senha, setSenha] = useState("");
   const [mostraSenha, setMostraSenha] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -134,12 +151,9 @@ export default function CadastroUsuario() {
     ),
   });
 
-  //console.log(selectedId === "1" ? schemaCliente : schemaEstacionamento);
-
-  function handleSignIn(data) {
-    console.log("entrei");
-    console.log(data);
-  }
+  handleTextChange = (text) => {
+    return text.replace(/[^a-zA-Z]/g, "");
+  };
 
   const startLoading = () => {
     setLoading(true);
@@ -178,36 +192,35 @@ export default function CadastroUsuario() {
     }
   };
 
-  function cadastrar() {
+  function cadastrar(data) {
     startLoading();
-    let data = "";
     let endpoint = "";
     if (tipo.value === "C") {
       data = {
-        nome: nome,
-        cpf: removeCaracteres(cpf, "numeros"),
-        email: email,
-        senha: senha,
-        telefone: removeCaracteres(telefone, "numeros"),
-        placa: removeCaracteres(placa, "letrasENumeros"),
+        nome: data.nome,
+        cpf: removeCaracteres(data.cpf, "numeros"),
+        email: data.email,
+        senha: data.senha,
+        telefone: removeCaracteres(data.telefone, "numeros"),
+        placa: removeCaracteres(data.placa, "letrasENumeros"),
       };
       endpoint = "clientes";
     } else if (tipo.value === "E") {
       data = {
-        nomecontato: nomeResponsavel,
-        razaosocial: razaoSocial,
-        nomefantasia: nomeFantasia,
-        cnpj: removeCaracteres(cnpj, "numeros"),
-        email: email,
-        senha: senha,
-        telefone: removeCaracteres(telefone, "numeros"),
-        cep: removeCaracteres(cep, "letrasENumeros"),
-        logradouro: endereco,
-        numero: numero,
-        complemento: complemento,
-        bairro: bairro,
-        cidade: cidade,
-        estado: estado,
+        nomecontato: data.nomeResponsavel,
+        razaosocial: data.razaoSocial,
+        nomefantasia: data.nomeFantasia,
+        cnpj: removeCaracteres(data.cnpj, "numeros"),
+        email: data.email,
+        senha: data.senha,
+        telefone: removeCaracteres(data.telefone, "numeros"),
+        cep: removeCaracteres(data.cep, "letrasENumeros"),
+        logradouro: data.endereco,
+        numero: data.numero,
+        complemento: data.complemento,
+        bairro: data.bairro,
+        cidade: data.cidade,
+        estado: data.estado,
       };
       endpoint = "estacionamentos";
     }
@@ -428,7 +441,7 @@ export default function CadastroUsuario() {
                 </>
               ) : (
                 <>
-                  <ButtonCadastrar onPress={handleSubmit(handleSignIn)} />
+                  <ButtonCadastrar onPress={handleSubmit(cadastrar)} />
                 </>
               )}
             </View>
@@ -616,62 +629,168 @@ export default function CadastroUsuario() {
                   </Text>
                 )}
                 <Text style={styles.titleItemForm}>Cep</Text>
-                <TextInputMask
-                  style={styles.input}
-                  type={"zip-code"}
-                  placeholder="Digite o Cep"
-                  value={cep}
-                  onChangeText={(text) => setCep(text)}
-                  onBlur={(text) => checkCep(text)}
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInputMask
+                      style={styles.input}
+                      type={"zip-code"}
+                      placeholder="Digite o Cep"
+                      maxLength={9}
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={(text) => {
+                        onBlur(checkCep(text));
+                      }}
+                    />
+                  )}
+                  name="cep"
                 />
+                {errors.cep && (
+                  <Text style={styles.errorText}>{errors.cep.message}</Text>
+                )}
                 <Text style={styles.titleItemForm}>Endereço</Text>
-                <TextInput
-                  placeholder="Digite o endereço"
-                  autoCapitalize="characters"
-                  onChangeText={setEndereco}
-                  value={endereco}
-                  style={styles.input}
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Digite o endereço"
+                      autoCapitalize="characters"
+                      maxLength={100}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  )}
+                  name="endereco"
                 />
+                {errors.endereco && (
+                  <Text style={styles.errorText}>
+                    {errors.endereco.message}
+                  </Text>
+                )}
                 <Text style={styles.titleItemForm}>Numero</Text>
-                <TextInput
-                  placeholder="Digite o Número"
-                  autoCapitalize="characters"
-                  onChangeText={setNumero}
-                  value={numero}
-                  style={styles.input}
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Digite o Número"
+                      autoCapitalize="characters"
+                      maxLength={6}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  )}
+                  name="numero"
                 />
+                {errors.numero && (
+                  <Text style={styles.errorText}>{errors.numero.message}</Text>
+                )}
                 <Text style={styles.titleItemForm}>Complemento</Text>
-                <TextInput
-                  placeholder="Digite o Complemento"
-                  autoCapitalize="characters"
-                  onChangeText={setComplemento}
-                  value={complemento}
-                  style={styles.input}
+                <Controller
+                  control={control}
+                  rules={{
+                    required: false,
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Digite o Complemento"
+                      autoCapitalize="characters"
+                      maxLength={30}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  )}
+                  name="complemento"
                 />
+                {errors.complemento && (
+                  <Text style={styles.errorText}>
+                    {errors.complemento.message}
+                  </Text>
+                )}
                 <Text style={styles.titleItemForm}>Bairro</Text>
-                <TextInput
-                  placeholder="Digite o Bairro"
-                  autoCapitalize="characters"
-                  onChangeText={setBairro}
-                  value={bairro}
-                  style={styles.input}
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Digite o Bairro"
+                      autoCapitalize="characters"
+                      maxLength={30}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  )}
+                  name="bairro"
                 />
+                {errors.bairro && (
+                  <Text style={styles.errorText}>{errors.bairro.message}</Text>
+                )}
                 <Text style={styles.titleItemForm}>Cidade</Text>
-                <TextInput
-                  placeholder="Digite a Cidade"
-                  autoCapitalize="characters"
-                  onChangeText={setCidade}
-                  value={cidade}
-                  style={styles.input}
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Digite a Cidade"
+                      autoCapitalize="characters"
+                      maxLength={30}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  )}
+                  name="cidade"
                 />
+                {errors.cidade && (
+                  <Text style={styles.errorText}>{errors.cidade.message}</Text>
+                )}
                 <Text style={styles.titleItemForm}>Estado</Text>
-                <TextInput
-                  placeholder="Digite o Estado"
-                  autoCapitalize="characters"
-                  onChangeText={setEstado}
-                  value={estado}
-                  style={styles.input}
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Digite o Estado"
+                      autoCapitalize="characters"
+                      maxLength={2}
+                      minLength={2}
+                      onBlur={onBlur}
+                      onChangeText={(text) => {
+                        onChange(handleTextChange(text));
+                      }}
+                      value={value}
+                    />
+                  )}
+                  name="estado"
                 />
+                {errors.estado && (
+                  <Text style={styles.errorText}>{errors.estado.message}</Text>
+                )}
                 <Text style={styles.errorText}>{mensagem}</Text>
               </View>
               <Text style={styles.errorText}>{mensagem}</Text>
@@ -681,7 +800,7 @@ export default function CadastroUsuario() {
                 </>
               ) : (
                 <>
-                  <ButtonCadastrar onPress={handleSubmit(handleSignIn)} />
+                  <ButtonCadastrar onPress={handleSubmit(cadastrar)} />
                 </>
               )}
             </View>
