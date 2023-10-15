@@ -1,15 +1,7 @@
 import React, { useMemo, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  ScrollView,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, ScrollView, StyleSheet, Dimensions } from "react-native";
 import * as Animatable from "react-native-animatable";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Loading from "../../components/Loading";
 import ButtonCadastrar from "../../components/buttons/ButtonCadastrar";
 import TipoAcesso from "../../components/screens/TipoAcesso";
@@ -17,8 +9,6 @@ import CadastroCliente from "../../components/screens/CadastroCliente";
 import CadastroEstacionamento from "../../components/screens/CadastroEstacionamento";
 import { useNavigation } from "@react-navigation/native";
 import usuarioService from "../../services/UsuarioService";
-import { TextInputMask } from "react-native-masked-text";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { cpf, cnpj } from "cpf-cnpj-validator";
@@ -121,8 +111,6 @@ export default function CadastroUsuario() {
   const navigation = useNavigation();
   const [mensagem, setMensagem] = useState(null);
   const [selectedId, setSelectedId] = useState("1");
-  const [campoFocado, setCampoFocado] = useState(null);
-  const [mostraSenha, setMostraSenha] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const {
@@ -135,11 +123,6 @@ export default function CadastroUsuario() {
       selectedId === "1" ? schemaCliente : schemaEstacionamento
     ),
   });
-
-  somenteLetras = (text) => {
-    return text.replace(/[^a-zA-Z]/g, "");
-  };
-
   const startLoading = () => {
     setLoading(true);
     setTimeout(() => {
@@ -156,24 +139,6 @@ export default function CadastroUsuario() {
     } else textoConvertido = null;
     return textoConvertido;
   }
-
-  const buscaEndereco = (cepValue) => {
-    const cep = cepValue.replace(/\D/g, "");
-    if (cep.length === 8) {
-      fetch(`https://viacep.com.br/ws/${cep}/json/`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (!data.erro) {
-            setValue("endereco", data.logradouro.toUpperCase());
-            setValue("bairro", data.bairro.toUpperCase());
-            setValue("cidade", data.localidade.toUpperCase());
-            setValue("estado", data.uf.toUpperCase());
-            setValue("complemento", data.complemento);
-            setCampoFocado("numero");
-          }
-        });
-    }
-  };
 
   function cadastrar(data) {
     startLoading();
@@ -243,9 +208,6 @@ export default function CadastroUsuario() {
     []
   );
   const tipo = radioButtons.find((item) => item.id === selectedId);
-  const togglePasswordVisibility = () => {
-    setMostraSenha(!mostraSenha);
-  };
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -263,159 +225,7 @@ export default function CadastroUsuario() {
         >
           {selectedId === "1" ? (
             <View style={styles.containerCadastro}>
-              <View>
-                <Text style={styles.titleItemForm}>Nome</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      placeholder="Digite seu nome"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      maxLength={100}
-                      value={value}
-                      style={styles.input}
-                    />
-                  )}
-                  name="nome"
-                />
-                {errors.nome && (
-                  <Text style={styles.errorText}>{errors.nome.message}</Text>
-                )}
-                <Text style={styles.titleItemForm}>Cpf</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInputMask
-                      style={styles.input}
-                      type={"cpf"}
-                      placeholder={"Digite o CPF"}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      maxLength={14}
-                      value={value}
-                    />
-                  )}
-                  name="cpf"
-                />
-                {errors.cpf && (
-                  <Text style={styles.errorText}>{errors.cpf.message}</Text>
-                )}
-                <Text style={styles.titleItemForm}>Email</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Digite seu email"
-                      autoCapitalize="none"
-                      maxLength={100}
-                      onBlur={onBlur}
-                      onChangeText={(text) => {
-                        onChange(text.toLowerCase());
-                      }}
-                      value={value}
-                    />
-                  )}
-                  name="email"
-                />
-                {errors.email && (
-                  <Text style={styles.errorText}>{errors.email.message}</Text>
-                )}
-                <Text style={styles.titleItemForm}>Senha</Text>
-                <View>
-                  <Controller
-                    control={control}
-                    rules={{
-                      required: true,
-                    }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                      <TextInput
-                        style={styles.input}
-                        placeholder="Digite sua senha"
-                        onChangeText={onChange}
-                        secureTextEntry={!mostraSenha}
-                        onBlur={onBlur}
-                        value={value}
-                      />
-                    )}
-                    name="senha"
-                  />
-                  <TouchableOpacity
-                    onPress={togglePasswordVisibility}
-                    style={styles.passwordIcon}
-                  >
-                    <MaterialCommunityIcons
-                      name={mostraSenha ? "eye-off" : "eye"}
-                      size={30}
-                      color="gray"
-                    />
-                  </TouchableOpacity>
-                </View>
-                {errors.senha && (
-                  <Text style={styles.errorText}>{errors.senha.message}</Text>
-                )}
-                <Text style={styles.titleItemForm}>Celular</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInputMask
-                      style={styles.input}
-                      type={"cel-phone"}
-                      options={{
-                        maskType: "BRL",
-                        withDDD: true,
-                        dddMask: "(99) ",
-                      }}
-                      maxLength={15}
-                      placeholder="Digite seu celular"
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                    />
-                  )}
-                  name="telefone"
-                />
-                {errors.telefone && (
-                  <Text style={styles.errorText}>
-                    {errors.telefone.message}
-                  </Text>
-                )}
-                <Text style={styles.titleItemForm}>Placa do Veiculo</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: false,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      placeholder="Digite a placa do veiculo"
-                      autoCapitalize="characters"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      maxLength={10}
-                      value={value}
-                      style={styles.input}
-                    />
-                  )}
-                  name="placa"
-                />
-                {errors.placa && (
-                  <Text style={styles.errorText}>{errors.placa.message}</Text>
-                )}
-              </View>
+              <CadastroCliente control={control} errors={errors} />
               <Text style={styles.errorText}>{mensagem}</Text>
               {loading ? (
                 <>
@@ -426,359 +236,15 @@ export default function CadastroUsuario() {
                   <ButtonCadastrar onPress={handleSubmit(cadastrar)} />
                 </>
               )}
+              <Text style={styles.errorText}>{mensagem}</Text>
             </View>
           ) : (
             <View style={styles.containerCadastro}>
-              <View>
-                <Text style={styles.titleItemForm}>Responsável</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: false,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      placeholder="Digite o Nome do Responsável"
-                      autoCapitalize="characters"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      maxLength={100}
-                      value={value}
-                      style={styles.input}
-                    />
-                  )}
-                  name="nomeResponsavel"
-                />
-                {errors.nomeResponsavel && (
-                  <Text style={styles.errorText}>
-                    {errors.nomeResponsavel.message}
-                  </Text>
-                )}
-                <Text style={styles.titleItemForm}>Razão Social</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      placeholder="Digite a Razão Social"
-                      autoCapitalize="characters"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      maxLength={100}
-                      value={value}
-                      style={styles.input}
-                    />
-                  )}
-                  name="razaoSocial"
-                />
-                {errors.razaoSocial && (
-                  <Text style={styles.errorText}>
-                    {errors.razaoSocial.message}
-                  </Text>
-                )}
-                <Text style={styles.titleItemForm}>Nome Fantasia</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      placeholder="Digite o Nome Fantasia"
-                      autoCapitalize="characters"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      maxLength={100}
-                      value={value}
-                      style={styles.input}
-                    />
-                  )}
-                  name="nomeFantasia"
-                />
-                {errors.nomeFantasia && (
-                  <Text style={styles.errorText}>
-                    {errors.nomeFantasia.message}
-                  </Text>
-                )}
-                <Text style={styles.titleItemForm}>Cnpj</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInputMask
-                      style={styles.input}
-                      type={"cnpj"}
-                      placeholder={"Digite o CNPJ"}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      maxLength={18}
-                      value={value}
-                    />
-                  )}
-                  name="cnpj"
-                />
-                {errors.cnpj && (
-                  <Text style={styles.errorText}>{errors.cnpj.message}</Text>
-                )}
-                <Text style={styles.titleItemForm}>Email</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Digite seu email"
-                      autoCapitalize="none"
-                      maxLength={100}
-                      onBlur={onBlur}
-                      onChangeText={(text) => {
-                        onChange(text.toLowerCase());
-                      }}
-                      value={value}
-                    />
-                  )}
-                  name="email"
-                />
-                {errors.email && (
-                  <Text style={styles.errorText}>{errors.email.message}</Text>
-                )}
-                <Text style={styles.titleItemForm}>Senha</Text>
-                <View>
-                  <Controller
-                    control={control}
-                    rules={{
-                      required: true,
-                    }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                      <TextInput
-                        style={styles.input}
-                        placeholder="Digite sua senha"
-                        onChangeText={onChange}
-                        secureTextEntry={!mostraSenha}
-                        onBlur={onBlur}
-                        value={value}
-                      />
-                    )}
-                    name="senha"
-                  />
-                  <TouchableOpacity
-                    onPress={togglePasswordVisibility}
-                    style={styles.passwordIcon}
-                  >
-                    <MaterialCommunityIcons
-                      name={mostraSenha ? "eye-off" : "eye"}
-                      size={30}
-                      color="gray"
-                    />
-                  </TouchableOpacity>
-                </View>
-                {errors.senha && (
-                  <Text style={styles.errorText}>{errors.senha.message}</Text>
-                )}
-                <Text style={styles.titleItemForm}>Celular</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInputMask
-                      style={styles.input}
-                      type={"cel-phone"}
-                      options={{
-                        maskType: "BRL",
-                        withDDD: true,
-                        dddMask: "(99) ",
-                      }}
-                      maxLength={15}
-                      placeholder="Digite seu celular"
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                    />
-                  )}
-                  name="telefone"
-                />
-                {errors.telefone && (
-                  <Text style={styles.errorText}>
-                    {errors.telefone.message}
-                  </Text>
-                )}
-                <Text style={styles.titleItemForm}>Cep</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInputMask
-                      style={styles.input}
-                      type={"zip-code"}
-                      placeholder="Digite o CEP"
-                      maxLength={9}
-                      value={value}
-                      onBlur={onBlur}
-                      onChangeText={(text) => {
-                        onChange(text);
-                        buscaEndereco(text);
-                      }}
-                    />
-                  )}
-                  name="cep"
-                />
-                {errors.cep && (
-                  <Text style={styles.errorText}>{errors.cep.message}</Text>
-                )}
-                <Text style={styles.titleItemForm}>Endereço</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Digite o endereço"
-                      autoCapitalize="characters"
-                      maxLength={100}
-                      onBlur={onBlur}
-                      value={value}
-                      onChangeText={onChange}
-                    />
-                  )}
-                  name="endereco"
-                />
-                {errors.endereco && (
-                  <Text style={styles.errorText}>
-                    {errors.endereco.message}
-                  </Text>
-                )}
-                <Text style={styles.titleItemForm}>Numero</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Digite o Número"
-                      autoCapitalize="characters"
-                      maxLength={6}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      ref={(input) => {
-                        if (campoFocado === "numero" && input) {
-                          input.focus();
-                        }
-                      }}
-                    />
-                  )}
-                  name="numero"
-                />
-                {errors.numero && (
-                  <Text style={styles.errorText}>{errors.numero.message}</Text>
-                )}
-                <Text style={styles.titleItemForm}>Complemento</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: false,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Digite o Complemento"
-                      autoCapitalize="characters"
-                      maxLength={30}
-                      onBlur={onBlur}
-                      value={value}
-                      onChangeText={onChange}
-                    />
-                  )}
-                  name="complemento"
-                />
-                {errors.complemento && (
-                  <Text style={styles.errorText}>
-                    {errors.complemento.message}
-                  </Text>
-                )}
-                <Text style={styles.titleItemForm}>Bairro</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Digite o Bairro"
-                      autoCapitalize="characters"
-                      maxLength={30}
-                      onBlur={onBlur}
-                      value={value}
-                      onChangeText={onChange}
-                    />
-                  )}
-                  name="bairro"
-                />
-                {errors.bairro && (
-                  <Text style={styles.errorText}>{errors.bairro.message}</Text>
-                )}
-                <Text style={styles.titleItemForm}>Cidade</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Digite a Cidade"
-                      autoCapitalize="characters"
-                      maxLength={30}
-                      onBlur={onBlur}
-                      value={value}
-                      onChangeText={onChange}
-                    />
-                  )}
-                  name="cidade"
-                />
-                {errors.cidade && (
-                  <Text style={styles.errorText}>{errors.cidade.message}</Text>
-                )}
-                <Text style={styles.titleItemForm}>Estado</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Digite o Estado"
-                      autoCapitalize="characters"
-                      maxLength={2}
-                      minLength={2}
-                      onBlur={onBlur}
-                      value={value}
-                      onChangeText={onChange}
-                    />
-                  )}
-                  name="estado"
-                />
-                {errors.estado && (
-                  <Text style={styles.errorText}>{errors.estado.message}</Text>
-                )}
-                <Text style={styles.errorText}>{mensagem}</Text>
-              </View>
+              <CadastroEstacionamento
+                control={control}
+                errors={errors}
+                setValue={setValue}
+              />
               <Text style={styles.errorText}>{mensagem}</Text>
               {loading ? (
                 <>
@@ -806,18 +272,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     minHeight: height * 0.8,
   },
-  radioButton: {
-    marginBottom: 10,
-    marginLeft: 15,
-    tintColor: "red",
-    fontFamily: "Montserrat_400Regular",
-  },
-  containerTipo: {
-    flex: 1,
-    marginTop: "2%",
-    marginBottom: "2%",
-    paddingStart: "3%",
-  },
   containerForm: {
     flex: 2,
     backgroundColor: "#E5E5E5",
@@ -825,58 +279,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     paddingStart: "5%",
     paddingEnd: "5%",
-  },
-  message: {
-    fontSize: 24,
-    fontFamily: "Montserrat_700Bold",
-    color: "black",
-  },
-  title: {
-    fontSize: 20,
-    fontFamily: "Montserrat_700Bold",
-    padding: 5,
-    marginTop: 16,
-  },
-  titleItemForm: {
-    fontSize: 18,
-    fontFamily: "Montserrat_700Bold",
-    padding: 5,
-    marginTop: 10,
-  },
-  subtitle: {
-    fontSize: 16,
-    fontFamily: "Montserrat_400Regular",
-    padding: 2,
-    marginTop: 8,
-    position: "relative",
-  },
-  button: {
-    backgroundColor: "#FFBE00",
-    borderRadius: 50,
-    paddingVertical: 8,
-    width: "70%",
-    marginLeft: "auto",
-    marginRight: "auto",
-    marginTop: 15,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonText: {
-    fontSize: 18,
-    color: "black",
-    fontFamily: "Montserrat_700Bold",
-  },
-  input: {
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255, 190, 0, 0.3)",
-    height: 30,
-    fontFamily: "Montserrat_400Regular",
-    marginBottom: 8,
-    fontSize: 16,
-  },
-  passwordIcon: {
-    position: "absolute",
-    right: 10,
   },
   errorText: {
     fontSize: 14,
