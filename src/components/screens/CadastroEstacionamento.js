@@ -42,6 +42,7 @@ const CadastroEstacionamento = ({
             setCampoFocado("numero");
           }
         });
+      setCampoFocado(null);
     }
   };
 
