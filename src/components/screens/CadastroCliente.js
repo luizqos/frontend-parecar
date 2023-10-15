@@ -35,6 +35,7 @@ const CadastroCliente = ({
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             placeholder="Digite seu nome"
+            autoCapitalize="characters"
             onBlur={onBlur}
             onChangeText={onChange}
             maxLength={100}
