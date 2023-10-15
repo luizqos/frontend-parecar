@@ -121,28 +121,13 @@ export default function CadastroUsuario() {
   const navigation = useNavigation();
   const [mensagem, setMensagem] = useState(null);
   const [selectedId, setSelectedId] = useState("1");
-  //const [cpf, setCpf] = useState("");
-  //const [cnpj, setCnpj] = useState("");
-  //const [telefone, setTelefone] = useState("");
-  //const [cep, setCep] = useState("");
-  //const [nome, setNome] = useState("");
-  //const [nomeResponsavel, setNomeResponsavel] = useState("");
-  //const [nomeFantasia, setNomeFantasia] = useState("");
-  //const [razaoSocial, setRazaoSocial] = useState("");
-  // const [endereco, setEndereco] = useState("");
-  // const [numero, setNumero] = useState("");
-  // const [complemento, setComplemento] = useState("");
-  // const [bairro, setBairro] = useState("");
-  // const [cidade, setCidade] = useState("");
-  // const [estado, setEstado] = useState("");
-  // const [email, setEmail] = useState("");
-  // //const [placa, setPlaca] = useState("");
-  //const [senha, setSenha] = useState("");
+  const [campoFocado, setCampoFocado] = useState(null);
   const [mostraSenha, setMostraSenha] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const {
     control,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -151,7 +136,7 @@ export default function CadastroUsuario() {
     ),
   });
 
-  handleTextChange = (text) => {
+  somenteLetras = (text) => {
     return text.replace(/[^a-zA-Z]/g, "");
   };
 
@@ -172,21 +157,19 @@ export default function CadastroUsuario() {
     return textoConvertido;
   }
 
-  const checkCep = (cepValue) => {
-    const cep = cepValue._dispatchInstances.memoizedProps.value.replace(
-      /\D/g,
-      ""
-    );
+  const buscaEndereco = (cepValue) => {
+    const cep = cepValue.replace(/\D/g, "");
     if (cep.length === 8) {
       fetch(`https://viacep.com.br/ws/${cep}/json/`)
         .then((res) => res.json())
         .then((data) => {
           if (!data.erro) {
-            setEndereco(data.logradouro.toUpperCase());
-            setComplemento(data.complemento.toUpperCase());
-            setBairro(data.bairro.toUpperCase());
-            setCidade(data.localidade.toUpperCase());
-            setEstado(data.uf.toUpperCase());
+            setValue("endereco", data.logradouro.toUpperCase());
+            setValue("bairro", data.bairro.toUpperCase());
+            setValue("cidade", data.localidade.toUpperCase());
+            setValue("estado", data.uf.toUpperCase());
+            setValue("complemento", data.complemento);
+            setCampoFocado("numero");
           }
         });
     }
@@ -263,7 +246,6 @@ export default function CadastroUsuario() {
   const togglePasswordVisibility = () => {
     setMostraSenha(!mostraSenha);
   };
-
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -638,12 +620,13 @@ export default function CadastroUsuario() {
                     <TextInputMask
                       style={styles.input}
                       type={"zip-code"}
-                      placeholder="Digite o Cep"
+                      placeholder="Digite o CEP"
                       maxLength={9}
                       value={value}
-                      onChangeText={onChange}
-                      onBlur={(text) => {
-                        onBlur(checkCep(text));
+                      onBlur={onBlur}
+                      onChangeText={(text) => {
+                        onChange(text);
+                        buscaEndereco(text);
                       }}
                     />
                   )}
@@ -665,8 +648,8 @@ export default function CadastroUsuario() {
                       autoCapitalize="characters"
                       maxLength={100}
                       onBlur={onBlur}
-                      onChangeText={onChange}
                       value={value}
+                      onChangeText={onChange}
                     />
                   )}
                   name="endereco"
@@ -691,6 +674,11 @@ export default function CadastroUsuario() {
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
+                      ref={(input) => {
+                        if (campoFocado === "numero" && input) {
+                          input.focus();
+                        }
+                      }}
                     />
                   )}
                   name="numero"
@@ -711,8 +699,8 @@ export default function CadastroUsuario() {
                       autoCapitalize="characters"
                       maxLength={30}
                       onBlur={onBlur}
-                      onChangeText={onChange}
                       value={value}
+                      onChangeText={onChange}
                     />
                   )}
                   name="complemento"
@@ -735,8 +723,8 @@ export default function CadastroUsuario() {
                       autoCapitalize="characters"
                       maxLength={30}
                       onBlur={onBlur}
-                      onChangeText={onChange}
                       value={value}
+                      onChangeText={onChange}
                     />
                   )}
                   name="bairro"
@@ -757,8 +745,8 @@ export default function CadastroUsuario() {
                       autoCapitalize="characters"
                       maxLength={30}
                       onBlur={onBlur}
-                      onChangeText={onChange}
                       value={value}
+                      onChangeText={onChange}
                     />
                   )}
                   name="cidade"
@@ -780,10 +768,8 @@ export default function CadastroUsuario() {
                       maxLength={2}
                       minLength={2}
                       onBlur={onBlur}
-                      onChangeText={(text) => {
-                        onChange(handleTextChange(text));
-                      }}
                       value={value}
+                      onChangeText={onChange}
                     />
                   )}
                   name="estado"
