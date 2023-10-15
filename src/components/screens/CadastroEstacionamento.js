@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,18 @@ import {
 import { Controller } from "react-hook-form";
 import { TextInputMask } from "react-native-masked-text";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Loading from "../Loading";
+import ButtonCadastrar from "../buttons/ButtonCadastrar";
 
-const CadastroEstacionamento = ({ control, errors, setValue }) => {
+const CadastroEstacionamento = ({
+  control,
+  errors,
+  setValue,
+  handleSubmit,
+  cadastrar,
+  loading,
+  mensagem,
+}) => {
   const [mostraSenha, setMostraSenha] = useState(false);
   const [campoFocado, setCampoFocado] = useState(null);
   const togglePasswordVisibility = () => {
@@ -36,7 +46,7 @@ const CadastroEstacionamento = ({ control, errors, setValue }) => {
   };
 
   return (
-    <View>
+    <View loading={loading} mensagem={mensagem}>
       <Text style={styles.titleItemForm}>Responsável</Text>
       <Controller
         control={control}
@@ -374,6 +384,16 @@ const CadastroEstacionamento = ({ control, errors, setValue }) => {
       />
       {errors.estado && (
         <Text style={styles.errorText}>{errors.estado.message}</Text>
+      )}
+      {loading ? (
+        <>
+          <Loading />
+        </>
+      ) : (
+        <>
+          <Text style={styles.errorText}>{mensagem}</Text>
+          <ButtonCadastrar onPress={handleSubmit(cadastrar)} />
+        </>
       )}
     </View>
   );

@@ -2,8 +2,6 @@ import React, { useMemo, useState } from "react";
 import { View, Text, ScrollView, StyleSheet, Dimensions } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { useForm } from "react-hook-form";
-import Loading from "../../components/Loading";
-import ButtonCadastrar from "../../components/buttons/ButtonCadastrar";
 import TipoAcesso from "../../components/screens/TipoAcesso";
 import CadastroCliente from "../../components/screens/CadastroCliente";
 import CadastroEstacionamento from "../../components/screens/CadastroEstacionamento";
@@ -99,6 +97,7 @@ const schemaEstacionamento = yup.object().shape({
   cidade: yup.string().required("Cidade é obrigatória"),
   estado: yup
     .string()
+    .required("Digite a UF com 2 digitos")
     .uppercase()
     .length(2, "Digite a UF com 2 digitos")
     .matches(
@@ -225,18 +224,14 @@ export default function CadastroUsuario() {
         >
           {selectedId === "1" ? (
             <View style={styles.containerCadastro}>
-              <CadastroCliente control={control} errors={errors} />
-              <Text style={styles.errorText}>{mensagem}</Text>
-              {loading ? (
-                <>
-                  <Loading />
-                </>
-              ) : (
-                <>
-                  <ButtonCadastrar onPress={handleSubmit(cadastrar)} />
-                </>
-              )}
-              <Text style={styles.errorText}>{mensagem}</Text>
+              <CadastroCliente
+                control={control}
+                errors={errors}
+                loading={loading}
+                mensagem={mensagem}
+                handleSubmit={handleSubmit}
+                cadastrar={cadastrar}
+              />
             </View>
           ) : (
             <View style={styles.containerCadastro}>
@@ -244,17 +239,10 @@ export default function CadastroUsuario() {
                 control={control}
                 errors={errors}
                 setValue={setValue}
+                setLoading={setLoading}
+                handleSubmit={handleSubmit}
+                cadastrar={cadastrar}
               />
-              <Text style={styles.errorText}>{mensagem}</Text>
-              {loading ? (
-                <>
-                  <Loading />
-                </>
-              ) : (
-                <>
-                  <ButtonCadastrar onPress={handleSubmit(cadastrar)} />
-                </>
-              )}
             </View>
           )}
         </Animatable.View>
@@ -279,11 +267,5 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     paddingStart: "5%",
     paddingEnd: "5%",
-  },
-  errorText: {
-    fontSize: 14,
-    textAlign: "left",
-    fontFamily: "Montserrat_400Regular",
-    color: "red",
   },
 });
