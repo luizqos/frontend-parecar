@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,59 +6,110 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
+import { Controller } from "react-hook-form";
 import { TextInputMask } from "react-native-masked-text";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Loading from "../Loading";
+import ButtonCadastrar from "../buttons/ButtonCadastrar";
 
-export default function CadastroCliente({
-  nome,
-  cpf,
-  email,
-  senha,
-  mostraSenha,
-  telefone,
-  placa,
-  setNome,
-  setCpf,
-  setEmail,
-  setSenha,
-  setTelefone,
-  setPlaca,
-  togglePasswordVisibility,
-}) {
+const CadastroCliente = ({
+  control,
+  errors,
+  handleSubmit,
+  cadastrar,
+  loading,
+  mensagem,
+}) => {
+  const [mostraSenha, setMostraSenha] = useState(false);
+  const togglePasswordVisibility = () => {
+    setMostraSenha(!mostraSenha);
+  };
   return (
-    <View>
+    <View loading={loading} mensagem={mensagem}>
       <Text style={styles.titleItemForm}>Nome</Text>
-      <TextInput
-        placeholder="Digite seu nome"
-        autoCapitalize="characters"
-        onChangeText={setNome}
-        value={nome}
-        style={styles.input}
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            placeholder="Digite seu nome"
+            autoCapitalize="characters"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            maxLength={100}
+            value={value}
+            style={styles.input}
+          />
+        )}
+        name="nome"
       />
+      {errors.nome && (
+        <Text style={styles.errorText}>{errors.nome.message}</Text>
+      )}
       <Text style={styles.titleItemForm}>Cpf</Text>
-      <TextInputMask
-        style={styles.input}
-        type={"cpf"}
-        placeholder={"Digite o CPF"}
-        value={cpf}
-        onChangeText={(text) => setCpf(text)}
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInputMask
+            style={styles.input}
+            type={"cpf"}
+            placeholder={"Digite o CPF"}
+            onBlur={onBlur}
+            onChangeText={onChange}
+            maxLength={14}
+            value={value}
+          />
+        )}
+        name="cpf"
       />
+      {errors.cpf && <Text style={styles.errorText}>{errors.cpf.message}</Text>}
       <Text style={styles.titleItemForm}>Email</Text>
-      <TextInput
-        placeholder="Digite seu email"
-        autoCapitalize="none"
-        onChangeText={setEmail}
-        value={email}
-        style={styles.input}
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu email"
+            autoCapitalize="none"
+            maxLength={100}
+            onBlur={onBlur}
+            onChangeText={(text) => {
+              onChange(text.toLowerCase());
+            }}
+            value={value}
+          />
+        )}
+        name="email"
       />
+      {errors.email && (
+        <Text style={styles.errorText}>{errors.email.message}</Text>
+      )}
       <Text style={styles.titleItemForm}>Senha</Text>
       <View>
-        <TextInput
-          placeholder="Digite sua senha"
-          onChangeText={setSenha}
-          secureTextEntry={!mostraSenha}
-          value={senha}
-          style={styles.input}
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={styles.input}
+              placeholder="Digite sua senha"
+              onChangeText={onChange}
+              secureTextEntry={!mostraSenha}
+              onBlur={onBlur}
+              value={value}
+            />
+          )}
+          name="senha"
         />
         <TouchableOpacity
           onPress={togglePasswordVisibility}
@@ -71,30 +122,72 @@ export default function CadastroCliente({
           />
         </TouchableOpacity>
       </View>
+      {errors.senha && (
+        <Text style={styles.errorText}>{errors.senha.message}</Text>
+      )}
       <Text style={styles.titleItemForm}>Celular</Text>
-      <TextInputMask
-        style={styles.input}
-        type={"cel-phone"}
-        options={{
-          maskType: "BRL",
-          withDDD: true,
-          dddMask: "(99) ",
+      <Controller
+        control={control}
+        rules={{
+          required: true,
         }}
-        placeholder="Digite seu celular"
-        value={telefone}
-        onChangeText={(text) => setTelefone(text)}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInputMask
+            style={styles.input}
+            type={"cel-phone"}
+            options={{
+              maskType: "BRL",
+              withDDD: true,
+              dddMask: "(99) ",
+            }}
+            maxLength={15}
+            placeholder="Digite seu celular"
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+          />
+        )}
+        name="telefone"
       />
+      {errors.telefone && (
+        <Text style={styles.errorText}>{errors.telefone.message}</Text>
+      )}
       <Text style={styles.titleItemForm}>Placa do Veiculo</Text>
-      <TextInput
-        placeholder="Digite a placa do veiculo"
-        autoCapitalize="characters"
-        onChangeText={setPlaca}
-        value={placa}
-        style={styles.input}
+      <Controller
+        control={control}
+        rules={{
+          required: false,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            placeholder="Digite a placa do veiculo"
+            autoCapitalize="characters"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            maxLength={10}
+            value={value}
+            style={styles.input}
+          />
+        )}
+        name="placa"
       />
+      {errors.placa && (
+        <Text style={styles.errorText}>{errors.placa.message}</Text>
+      )}
+      {loading ? (
+        <>
+          <Loading />
+        </>
+      ) : (
+        <>
+          <Text style={styles.errorText}>{mensagem}</Text>
+          <ButtonCadastrar onPress={handleSubmit(cadastrar)} />
+        </>
+      )}
     </View>
   );
-}
+};
+
 const styles = StyleSheet.create({
   titleItemForm: {
     fontSize: 18,
@@ -115,9 +208,11 @@ const styles = StyleSheet.create({
     right: 10,
   },
   errorText: {
-    fontSize: 16,
+    fontSize: 14,
     textAlign: "left",
     fontFamily: "Montserrat_400Regular",
     color: "red",
   },
 });
+
+export default CadastroCliente;
