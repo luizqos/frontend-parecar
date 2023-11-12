@@ -10,6 +10,7 @@ import {
 import * as Animatable from "react-native-animatable";
 import {
   requestBackgroundPermissionsAsync,
+  requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
   watchPositionAsync,
   LocationAccuracy,
@@ -22,6 +23,31 @@ import { Image } from "react-native";
 const { width, height } = Dimensions.get("screen");
 
 export default function Home() {
+  ///////////////// config for expo ////////////////////////
+
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let location = await getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
+  let text = "Waiting..";
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
+
   const [marker, setMarker] = useState({
     latitude: -19.9298306,
     longitude: -44.0589185,
@@ -32,9 +58,9 @@ export default function Home() {
   const [mensagem, setMensagem] = useState("Estamos buscando sua localização");
   const navigation = useNavigation();
 
-  function buscarEstacionamento() {
+  function buscarEstacionamento(dados) {
     estacionamentoService
-      .buscaEstacionamento()
+      .buscaEstacionamento(dados)
       .then((response) => {
         if (response) {
           setMarkers(response);
@@ -70,7 +96,6 @@ export default function Home() {
         setMensagem("Permissão concedida");
       } else {
         setMensagem("Permissão negada");
-        console.log("Permissão negada");
       }
     } catch (err) {
       console.warn(err);
@@ -93,6 +118,10 @@ export default function Home() {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           });
+          buscarEstacionamento({
+            latitude: response.coords.latitude,
+            longitude: response.coords.longitude,
+          });
         }
       );
     } catch (err) {
@@ -107,9 +136,24 @@ export default function Home() {
     }
   }, []);
 
-  useEffect(() => {
-    buscarEstacionamento();
-  }, []);
+  // useEffect(() => {
+  //   buscarEstacionamento(marker);
+  // }, []);
+
+  // useEffect(() => {
+  //   const checkMarker = () => {
+  //     setMensagem("Check maker");
+  //     if (marker !== null) {
+  //       setMensagem("Regiao", marker);
+  //       buscarEstacionamento(marker);
+  //     } else {
+  //       setMensagem("Aguerde 3 segundos");
+  //       setTimeout(checkMarker, 3000);
+  //     }
+  //   };
+
+  //   checkMarker();
+  // }, []);
   return (
     <View style={styles.container}>
       {initialRegion && isPermited && !!markers.length ? (
