@@ -13,6 +13,24 @@ class EstacionamentoService {
       }
     );
 
+    function converterDataPtBr(dataString) {
+      const data = new Date(dataString);
+
+      const options = {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      };
+
+      const formatter = new Intl.DateTimeFormat("pt-BR", options);
+
+      return formatter.format(data);
+    }
+
     let {
       latitude = null,
       longitude = null,
@@ -89,7 +107,15 @@ class EstacionamentoService {
           headers: Config.HEADER_REQUEST,
         }
       );
-      return Promise.resolve(response.data);
+      const resultado = response.data.map((item) => {
+        return {
+          ...item,
+          entrada: converterDataPtBr(entrada),
+          saida: converterDataPtBr(saida),
+        };
+      });
+
+      return Promise.resolve(resultado);
     } catch (error) {
       console.log(error);
       return false;
