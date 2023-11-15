@@ -20,6 +20,7 @@ import {
 import { TextInputMask } from "react-native-masked-text";
 import Loading from "../../components/Loading";
 import ButtonAgendar from "../../components/buttons/ButtonAgendar";
+import ButtonReservar from "../../components/buttons/ButtonReservar";
 import estacionamentoService from "../../services/EstacionamentoService";
 import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
@@ -66,6 +67,10 @@ export default function Home() {
   const [isPermited, setIsPermited] = useState(false);
   const [mensagem, setMensagem] = useState("Estamos buscando sua localização");
   const navigation = useNavigation();
+
+  const handleFloatingButtonPress = () => {
+    console.log("Botão flutuante pressionado!");
+  };
 
   function buscarEstacionamento(dados) {
     estacionamentoService
@@ -198,6 +203,7 @@ export default function Home() {
           <Loading />
         </View>
       )}
+      {isPermited && <ButtonReservar onPress={handleFloatingButtonPress} />}
       <Modal
         animationType="slide-up"
         transparent={true}
@@ -260,6 +266,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFBE00",
+    ...StyleSheet.absoluteFillObject,
   },
   bodyModal: {
     backgroundColor: "rgba(255, 190, 0, 0.9)",
@@ -280,6 +287,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: width,
     height: height,
+    ...StyleSheet.absoluteFillObject,
   },
   containerLogo: {
     flex: 2,
@@ -343,7 +351,7 @@ const styles = StyleSheet.create({
   },
   button: {
     position: "absolute",
-    backgroundColor: "#FFBE00",
+    backgroundColor: "#ffe599",
     borderRadius: 50,
     paddingVertical: 8,
     width: "60%",
