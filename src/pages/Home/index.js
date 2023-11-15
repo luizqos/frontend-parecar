@@ -6,8 +6,7 @@ import {
   PermissionsAndroid,
   Platform,
   Dimensions,
-  TouchableWithoutFeedback,
-  Modal,
+  TouchableOpacity,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import {
@@ -17,14 +16,14 @@ import {
   watchPositionAsync,
   LocationAccuracy,
 } from "expo-location";
-import { TextInputMask } from "react-native-masked-text";
 import Loading from "../../components/Loading";
-import ButtonAgendar from "../../components/buttons/ButtonAgendar";
 import ButtonReservar from "../../components/buttons/ButtonReservar";
+import EstacionamentoModal from "../../components/modals/EstacionamentoModal";
 import estacionamentoService from "../../services/EstacionamentoService";
 import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "react-native";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -58,7 +57,7 @@ export default function Home() {
 
   const [selectedMarker, setSelectedMarker] = useState(null);
 
-  const toggleModal = (marker) => {
+  const toggleModalEstacionamento = (marker) => {
     setSelectedMarker(marker);
     setModalVisible(!isModalVisible);
   };
@@ -182,7 +181,7 @@ export default function Home() {
                 latitude: parseFloat(m.latitude),
                 longitude: parseFloat(m.longitude),
               }}
-              onPress={() => toggleModal(m)}
+              onPress={() => toggleModalEstacionamento(m)}
             >
               <Image
                 source={require("../../assets/img/pinIcon.png")}
@@ -204,60 +203,11 @@ export default function Home() {
         </View>
       )}
       {isPermited && <ButtonReservar onPress={handleFloatingButtonPress} />}
-      <Modal
-        animationType="slide-up"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={() => {
-          toggleModal();
-        }}
-      >
-        <TouchableWithoutFeedback onPress={toggleModal}>
-          <View style={styles.containerModal}>
-            <Animatable.View animation="zoomIn" style={styles.bodyModal}>
-              {selectedMarker && (
-                <>
-                  <Text style={styles.titleModal}>Reserve sua vaga</Text>
-                  <Text style={styles.itemNomeEstacionamento}>
-                    {selectedMarker.razaosocial}
-                  </Text>
-                  <Text style={styles.titleItemModal}>Vagas</Text>
-                  <Text style={styles.itemModal}>
-                    {`${selectedMarker.vagasDisponiveis} Vagas Livres`}
-                  </Text>
-                  <Text style={styles.titleItemModal}>Endereço</Text>
-                  <Text style={styles.itemModal}>
-                    {`${selectedMarker.logradouro}, ${selectedMarker.numero}, ${selectedMarker.bairro}, ${selectedMarker.cidade}, ${selectedMarker.estado}`}
-                  </Text>
-                  <Text style={styles.titleItemModal}>Contato</Text>
-                  <Text style={styles.itemModal}>{selectedMarker.email}</Text>
-                  <TextInputMask
-                    style={styles.itemModal}
-                    type={"cel-phone"}
-                    options={{
-                      maskType: "BRL",
-                      withDDD: true,
-                      dddMask: "(99) ",
-                    }}
-                    value={selectedMarker.telefone}
-                  />
-                  <Text style={styles.titleItemModal}>
-                    Horário de Funcionamento
-                  </Text>
-                  <Text style={styles.itemModal}>
-                    {`De:  ${selectedMarker.abertura}\nAté: ${selectedMarker.fechamento}`}
-                  </Text>
-                  <Text style={styles.titleItemModal}>Agendamento</Text>
-                  <Text style={styles.itemModal}>
-                    {`De:  ${selectedMarker.entrada}\nAté: ${selectedMarker.saida}`}
-                  </Text>
-                  <ButtonAgendar />
-                </>
-              )}
-            </Animatable.View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
+      <EstacionamentoModal
+        isModalVisible={isModalVisible}
+        toggleModalEstacionamento={toggleModalEstacionamento}
+        selectedMarker={selectedMarker}
+      />
     </View>
   );
 }
@@ -267,20 +217,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFBE00",
     ...StyleSheet.absoluteFillObject,
-  },
-  bodyModal: {
-    backgroundColor: "rgba(255, 190, 0, 0.9)",
-    marginTop: 100,
-    width: width * 0.95,
-    height: height * 0.6,
-    padding: 20,
-    borderRadius: 10,
-  },
-  containerModal: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
   },
   map: {
     flex: 1,
@@ -308,40 +244,6 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat_700Bold",
     marginTop: 28,
     marginBottom: 12,
-  },
-  titleModal: {
-    fontSize: 18,
-    backgroundColor: "#ffe599",
-    borderRadius: 20,
-    textAlign: "center",
-    fontFamily: "Montserrat_700Bold",
-    marginTop: 2,
-    marginBottom: 20,
-  },
-  titleItemModal: {
-    fontSize: 16,
-    backgroundColor: "#ffe599",
-    borderRadius: 20,
-    textAlign: "center",
-    fontFamily: "Montserrat_700Bold",
-    marginTop: 2,
-    marginBottom: 2,
-  },
-  itemModal: {
-    fontSize: 14,
-    marginLeft: 15,
-    textAlign: "left",
-    fontFamily: "Montserrat_700Bold",
-    marginTop: 2,
-    marginBottom: 2,
-  },
-  itemNomeEstacionamento: {
-    fontSize: 16,
-    paddingStart: "5%",
-    paddingEnd: "5%",
-    textAlign: "center",
-    fontFamily: "Montserrat_700Bold",
-    marginBottom: 20,
   },
   textoLoading: {
     fontSize: 20,

@@ -19,9 +19,9 @@ export default function ButtonReservar({ onPress }) {
 const styles = StyleSheet.create({
   floatingButton: {
     position: "absolute",
-    borderRadius: 50, // Adicione a borda desejada para o botão flutuante
+    borderRadius: 50,
     padding: 10,
-    top: 16, // Ajuste para posicionar mais próximo do topo
+    top: 16,
     left: 16,
     backgroundColor: "#FFBE00",
     borderRadius: 50,
@@ -30,14 +30,14 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   buttonContent: {
-    flexDirection: "row", // Isso garante que os itens estejam dispostos na mesma linha
-    alignItems: "center", // Alinha os itens verticalmente no centro
-    justifyContent: "center", // Alinha os itens horizontalmente no centro
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   floatingButtonText: {
     fontSize: 16,
     fontFamily: "Montserrat_700Bold",
     color: "black",
-    marginLeft: 5, // Adicione o espaçamento desejado entre o ícone e o texto
+    marginLeft: 5,
   },
 });
