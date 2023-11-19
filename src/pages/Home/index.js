@@ -6,7 +6,6 @@ import {
   PermissionsAndroid,
   Platform,
   Dimensions,
-  TouchableOpacity,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import {
@@ -19,11 +18,11 @@ import {
 import Loading from "../../components/Loading";
 import ButtonReservar from "../../components/buttons/ButtonReservar";
 import EstacionamentoModal from "../../components/modals/EstacionamentoModal";
+import ReservaModal from "../../components/modals/ReservaModal";
 import estacionamentoService from "../../services/EstacionamentoService";
 import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -53,14 +52,23 @@ export default function Home() {
     text = JSON.stringify(location);
   }
 
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [estacionamentoModalVisible, setEstacionamentoModalVisible] =
+    useState(false);
+  const [reservaModalVisible, setReservaModalVisible] = useState(false);
 
   const [selectedMarker, setSelectedMarker] = useState(null);
 
   const toggleModalEstacionamento = (marker) => {
     setSelectedMarker(marker);
-    setModalVisible(!isModalVisible);
+    setEstacionamentoModalVisible(!estacionamentoModalVisible);
+    setReservaModalVisible(false);
   };
+
+  const toggleModalBuscaReserva = () => {
+    setReservaModalVisible(!reservaModalVisible);
+    setEstacionamentoModalVisible(false);
+  };
+
   const [initialRegion, setinitialRegion] = useState(null);
   const [markers, setMarkers] = useState([]);
   const [isPermited, setIsPermited] = useState(false);
@@ -68,7 +76,7 @@ export default function Home() {
   const navigation = useNavigation();
 
   const handleFloatingButtonPress = () => {
-    console.log("Botão flutuante pressionado!");
+    toggleModalBuscaReserva();
   };
 
   function buscarEstacionamento(dados) {
@@ -204,9 +212,13 @@ export default function Home() {
       )}
       {isPermited && <ButtonReservar onPress={handleFloatingButtonPress} />}
       <EstacionamentoModal
-        isModalVisible={isModalVisible}
+        isModalVisible={estacionamentoModalVisible}
         toggleModalEstacionamento={toggleModalEstacionamento}
         selectedMarker={selectedMarker}
+      />
+      <ReservaModal
+        isModalVisible={reservaModalVisible}
+        toggleModalBuscaReserva={toggleModalBuscaReserva}
       />
     </View>
   );

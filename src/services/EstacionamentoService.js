@@ -40,8 +40,7 @@ class EstacionamentoService {
       saida = null,
     } = dados;
 
-    const apiKey = "AIzaSyCiSR-itPpBtfKDoZC96k0vQOGKF6qsmEk";
-    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
+    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${Config.API_KEY_GOOGLE}`;
 
     const buscaCidadeUF = async (apiUrl) => {
       try {
