@@ -12,6 +12,11 @@ const BuscaEstacionamento = () => {
   const [saida, setSaida] = useState(null);
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
+  const handleDateChange = (entrada, saida) => {
+    setEntradaDate(entrada);
+    setSaidaDate(saida);
+  };
+
   useEffect(() => {
     const canEnableButton = saidaDate && entradaDate && coordenadas;
     setButtonDisabled(!canEnableButton);
@@ -47,8 +52,8 @@ const BuscaEstacionamento = () => {
       <ButtonBuscar disabled={buttonDisabled} />
       <Text style={styles.titleData}>Informe a data de reserva</Text>
       <View style={styles.datePickerContainer}>
-        <DataPicker label="Entrada" onDateChange={setEntradaDate} />
-        <DataPicker label="Saída" onDateChange={setSaidaDate} />
+        <DataPicker label="Entrada" onDateChange={handleDateChange} />
+        <DataPicker label="Saída" onDateChange={handleDateChange} />
       </View>
       {saidaDate && entradaDate && (
         <View>
