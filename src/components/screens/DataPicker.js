@@ -9,10 +9,16 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
-import DatePicker from "react-native-modern-datepicker";
-import { getFormatedDate } from "react-native-modern-datepicker";
+import DatePicker from "react-native-modern-calendar";
+import { getFormatedDate } from "react-native-modern-calendar";
 
-export default function DataPicker({ label, onDateChange }) {
+export default function DataPicker({
+  label,
+  onDateChange,
+  type,
+  entradaDate,
+  saidaDate,
+}) {
   const [openStartDatePicker, setOpenStartDatePicker] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = useState("");
   const [startedDate, setStartedDate] = useState("");
@@ -39,12 +45,17 @@ export default function DataPicker({ label, onDateChange }) {
   function handleChangeStartDate(propDate) {
     setStartedDate(propDate);
   }
+
   const handleOnPressStartDate = () => {
     setOpenStartDatePicker(!openStartDatePicker);
-    onDateChange(
-      inverterData(selectedStartDate),
-      inverterData(selectedStartDate)
-    );
+    onDateChange(inverterData(selectedStartDate), type);
+    if (selectedStartDate) {
+      if (type === "entrada") {
+        entradaDate(selectedStartDate);
+      } else if (type === "saida") {
+        saidaDate(selectedStartDate);
+      }
+    }
   };
 
   function formatarDataComDias(dias) {
@@ -69,20 +80,13 @@ export default function DataPicker({ label, onDateChange }) {
             <View>
               <TouchableOpacity onPress={handleOnPressStartDate}>
                 <Text style={styles.selectData}>
-                  {!selectedStartDate ? label : inverterData(selectedStartDate)}
+                  {!selectedStartDate
+                    ? `Informe a Data de ${label}`
+                    : inverterData(selectedStartDate)}
                 </Text>
               </TouchableOpacity>
             </View>
-
-            {/* <TouchableOpacity
-              onPress={() => console.log("Subimit data")}
-              style={styles.submitBtn}
-            >
-              <Text style={{ fontSize: 20, color: "white" }}>Submit</Text>
-            </TouchableOpacity> */}
           </View>
-
-          {/* Create modal for date picker */}
           <Modal
             animationType="slide"
             transparent={true}
@@ -108,11 +112,8 @@ export default function DataPicker({ label, onDateChange }) {
                     borderColor: "rgba(122, 146, 165, 0.1)",
                   }}
                 />
-                {/* <DatePicker
-                  onSelectedChange={(date) => setSelectedDate(date)}
-                /> */}
                 <TouchableOpacity onPress={handleOnPressStartDate}>
-                  <Text style={{ color: "white" }}>Fechar</Text>
+                  <Text style={{ color: "white" }}>Confirmar</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -143,8 +144,8 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     paddingHorizontal: 10,
     minWidth: 100,
-    height: 35,
-    marginLeft: 3,
+    height: 40,
+    marginLeft: "auto",
     marginRight: "auto",
     alignItems: "center",
     justifyContent: "center",

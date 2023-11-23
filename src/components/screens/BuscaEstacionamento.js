@@ -8,13 +8,14 @@ const BuscaEstacionamento = () => {
   const [coordenadas, setCoordenadas] = useState(null);
   const [entradaDate, setEntradaDate] = useState(null);
   const [saidaDate, setSaidaDate] = useState(null);
-  const [entrada, setEntrada] = useState(null);
-  const [saida, setSaida] = useState(null);
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
-  const handleDateChange = (entrada, saida) => {
-    setEntradaDate(entrada);
-    setSaidaDate(saida);
+  const handleDateChange = (entrada, saida, type) => {
+    if (type === "entrada") {
+      setEntradaDate(entrada);
+    } else if (type === "saida") {
+      setSaidaDate(saida);
+    }
   };
 
   useEffect(() => {
@@ -34,12 +35,6 @@ const BuscaEstacionamento = () => {
     return date.toLocaleString("pt-BR", options);
   }
 
-  function formatDateForFind(date) {
-    let dataOriginal = new Date(date);
-    dataOriginal.setHours(dataOriginal.getHours() - 3);
-    return dataOriginal.toISOString().replace(/T|.000Z/g, " ");
-  }
-
   const receberCoordenadas = (lat, lng) => {
     setCoordenadas({ lat, lng });
   };
@@ -50,21 +45,37 @@ const BuscaEstacionamento = () => {
         Informe data e endereço para localizar os estaciomantos mais próximos.
       </Text>
       <ButtonBuscar disabled={buttonDisabled} />
-      <Text style={styles.titleData}>Informe a data de reserva</Text>
       <View style={styles.datePickerContainer}>
-        <DataPicker label="Entrada" onDateChange={handleDateChange} />
-        <DataPicker label="Saída" onDateChange={handleDateChange} />
+        <View style={styles.datePickerItem}>
+          <Text style={styles.datePickerLabel}>Entrada</Text>
+          <DataPicker
+            label="Entrada"
+            onDateChange={handleDateChange}
+            type="entrada"
+            entradaDate={setEntradaDate}
+          />
+        </View>
+        <View style={styles.datePickerItem}>
+          <Text style={styles.datePickerLabel}>Saída</Text>
+          <DataPicker
+            label="Saída"
+            onDateChange={handleDateChange}
+            type="saida"
+            saidaDate={setSaidaDate}
+          />
+        </View>
       </View>
-      {saidaDate && entradaDate && (
+      {/* <Text style={styles.titleData}>Informe a data de reserva</Text> */}
+      {/* {saidaDate && entradaDate && (
         <View>
           <Text style={styles.datasReserva}>
             Entrada: {entradaDate ? formatDateTime(entradaDate) : "N/A"}
           </Text>
           <Text style={styles.datasReserva}>
-            Saida: {saidaDate ? formatDateTime(saidaDate) : "N/A"}
+            Saída: {saidaDate ? formatDateTime(saidaDate) : "N/A"}
           </Text>
         </View>
-      )}
+      )} */}
       <View>
         <Text style={styles.titleEndereco}>Digite o endereço</Text>
         <EnderecoGoogle receberCoordenadas={receberCoordenadas} />
@@ -94,6 +105,15 @@ const styles = StyleSheet.create({
   datePickerContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  datePickerItem: {
+    flex: 1,
+    alignItems: "center",
+  },
+  datePickerLabel: {
+    fontSize: 14,
+    fontFamily: "Montserrat_700Bold",
+    marginBottom: 5,
   },
   datasReserva: {
     fontSize: 14,
