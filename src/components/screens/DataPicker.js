@@ -9,8 +9,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
-import DatePicker from "react-native-modern-calendar";
-import { getFormatedDate } from "react-native-modern-calendar";
+
+import { DatePicker } from "../datePicker/DatePicker";
+import { utils } from "../datePicker/utils";
+
+export const { getFormatedDate, getToday } = new utils({ isGregorian: true });
 
 export default function DataPicker({
   label,
