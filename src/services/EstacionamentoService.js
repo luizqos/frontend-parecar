@@ -84,20 +84,22 @@ class EstacionamentoService {
         uf = state;
         cidade = city;
 
-        const dataAtual = new Date(new Date().getTime() + 30 * 60 * 1000);
-        const minutosArredondados = Math.ceil(dataAtual.getMinutes() / 15) * 15;
-        dataAtual.setMinutes(minutosArredondados);
-        dataAtual.setSeconds(0);
-        entrada = new Date(dataAtual.getTime() - 3 * 60 * 60 * 1000)
-          .toISOString()
-          .slice(0, 19)
-          .replace("T", " ");
-        saida = new Date(dataAtual.getTime() - 1 * 60 * 60 * 1000)
-          .toISOString()
-          .slice(0, 19)
-          .replace("T", " ");
+        if (!entrada && !saida) {
+          const dataAtual = new Date(new Date().getTime() + 30 * 60 * 1000);
+          const minutosArredondados =
+            Math.ceil(dataAtual.getMinutes() / 15) * 15;
+          dataAtual.setMinutes(minutosArredondados);
+          dataAtual.setSeconds(0);
+          entrada = new Date(dataAtual.getTime() - 3 * 60 * 60 * 1000)
+            .toISOString()
+            .slice(0, 19)
+            .replace("T", " ");
+          saida = new Date(dataAtual.getTime() - 1 * 60 * 60 * 1000)
+            .toISOString()
+            .slice(0, 19)
+            .replace("T", " ");
+        }
       }
-
       const response = await axios.get(
         `${Config.API_URL}/estacionamentos/vagas-disponiveis?uf=${uf}&cidade=${cidade}&entradareserva=${entrada}&saidareserva=${saida}`,
         {
