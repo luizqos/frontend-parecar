@@ -52,6 +52,8 @@ export default function Home() {
     text = JSON.stringify(location);
   }
 
+  const [searchedLocation, setSearchedLocation] = useState(null);
+
   const [estacionamentoModalVisible, setEstacionamentoModalVisible] =
     useState(false);
   const [reservaModalVisible, setReservaModalVisible] = useState(false);
@@ -172,6 +174,25 @@ export default function Home() {
       permissaoLocalizacao();
     }
   }, []);
+
+  const handleBuscarEstacionamento = (searchData) => {
+    buscarEstacionamento(searchData);
+
+    setSearchedLocation({
+      lat: searchData.latitude,
+      lng: searchData.longitude,
+    });
+
+    if (searchData.latitude && searchData.longitude) {
+      setinitialRegion({
+        latitude: searchData.latitude,
+        longitude: searchData.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    }
+    setReservaModalVisible(false);
+  };
   return (
     <View style={styles.container}>
       {initialRegion && isPermited && !!markers ? (
@@ -197,6 +218,19 @@ export default function Home() {
               />
             </Marker>
           ))}
+          {searchedLocation && (
+            <Marker
+              coordinate={{
+                latitude: searchedLocation.lat,
+                longitude: searchedLocation.lng,
+              }}
+            >
+              <Image
+                source={require("../../assets/img/pinIconAddress.png")}
+                style={{ width: 30, height: 30, resizeMode: "contain" }}
+              />
+            </Marker>
+          )}
         </MapView>
       ) : (
         <View style={styles.containerLogo}>
@@ -219,6 +253,7 @@ export default function Home() {
       <ReservaModal
         isModalVisible={reservaModalVisible}
         toggleModalBuscaReserva={toggleModalBuscaReserva}
+        onBuscarEstacionamento={handleBuscarEstacionamento}
       />
     </View>
   );

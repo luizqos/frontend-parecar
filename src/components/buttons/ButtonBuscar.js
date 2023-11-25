@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-export default function ButtonBuscar({ disabled }) {
+export default function ButtonBuscar({ disabled, onPress }) {
   return (
     <View>
       <TouchableOpacity
@@ -9,6 +9,7 @@ export default function ButtonBuscar({ disabled }) {
           { backgroundColor: disabled ? "grey" : "#fd7014" },
         ]}
         disabled={disabled}
+        onPress={onPress}
       >
         <Text style={styles.buttonText}>Buscar</Text>
       </TouchableOpacity>

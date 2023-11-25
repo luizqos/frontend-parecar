@@ -4,7 +4,7 @@ import EnderecoGoogle from "./EnderecoGoogle";
 import DataPicker from "./DataPicker";
 import ButtonBuscar from "../buttons/ButtonBuscar";
 
-const BuscaEstacionamento = () => {
+const BuscaEstacionamento = ({ onBuscarEstacionamento }) => {
   const [coordenadas, setCoordenadas] = useState(null);
   const [entradaDate, setEntradaDate] = useState(null);
   const [saidaDate, setSaidaDate] = useState(null);
@@ -39,12 +39,22 @@ const BuscaEstacionamento = () => {
     setCoordenadas({ lat, lng });
   };
 
+  const handleBuscarPress = () => {
+    const searchData = {
+      latitude: coordenadas.lat,
+      longitude: coordenadas.lng,
+      entrada: entradaDate,
+      saida: saidaDate,
+    };
+    onBuscarEstacionamento(searchData);
+  };
+
   return (
     <View>
       <Text style={styles.title}>
         Informe data e endereço para localizar os estaciomantos mais próximos.
       </Text>
-      <ButtonBuscar disabled={buttonDisabled} />
+      <ButtonBuscar disabled={buttonDisabled} onPress={handleBuscarPress} />
       <View style={styles.datePickerContainer}>
         <View style={styles.datePickerItem}>
           <Text style={styles.datePickerLabel}>Entrada</Text>

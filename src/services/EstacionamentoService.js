@@ -12,7 +12,6 @@ class EstacionamentoService {
         return Promise.reject(error);
       }
     );
-
     function converterDataPtBr(dataString) {
       const data = new Date(dataString);
 
