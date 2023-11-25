@@ -54,9 +54,9 @@ export default function DataPicker({
     onDateChange(inverterData(selectedStartDate), type);
     if (selectedStartDate) {
       if (type === "entrada") {
-        entradaDate(selectedStartDate);
+        entradaDate(selectedStartDate.replace(/\//g, "-"));
       } else if (type === "saida") {
-        saidaDate(selectedStartDate);
+        saidaDate(selectedStartDate.replace(/\//g, "-"));
       }
     }
   };
