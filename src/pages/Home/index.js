@@ -53,6 +53,7 @@ export default function Home() {
   }
 
   const [searchedLocation, setSearchedLocation] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [estacionamentoModalVisible, setEstacionamentoModalVisible] =
     useState(false);
@@ -105,6 +106,7 @@ export default function Home() {
               : "Erro, não foi possível buscar estacionamentos."
           );
           setMarkers(null);
+          setLoading(false);
         }
       })
       .catch((error) => {
@@ -241,7 +243,7 @@ export default function Home() {
             resizeMode="contain"
           />
           <Text style={styles.textoLoading}>{mensagem}</Text>
-          <Loading />
+          {loading && <Loading />}
         </View>
       )}
       {isPermited && <ButtonReservar onPress={handleFloatingButtonPress} />}
