@@ -12,7 +12,11 @@ import { StyleSheet } from "react-native";
 
 const { width, height } = Dimensions.get("screen");
 
-const ReservaModal = ({ isModalVisible, toggleModalBuscaReserva }) => {
+const ReservaModal = ({
+  isModalVisible,
+  toggleModalBuscaReserva,
+  onBuscarEstacionamento,
+}) => {
   const handleModalPress = (event) => {
     const { locationX, locationY } = event.nativeEvent;
 
@@ -40,8 +44,9 @@ const ReservaModal = ({ isModalVisible, toggleModalBuscaReserva }) => {
         <View style={styles.containerModal}>
           <Animatable.View animation="zoomIn" style={styles.bodyModal}>
             <Text style={styles.titleModal}>Busca de Estacionamentos</Text>
-            <BuscaEstacionamento />
-            {/* <ButtonAgendar /> */}
+            <BuscaEstacionamento
+              onBuscarEstacionamento={onBuscarEstacionamento}
+            />
           </Animatable.View>
         </View>
       </TouchableWithoutFeedback>
