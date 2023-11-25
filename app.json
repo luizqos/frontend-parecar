@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Parecar",
-    "slug": "parecar",
+    "slug": "frontend-parecar",
     "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,7 +24,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.luizgz500.parecar"
+      "bundleIdentifier": "com.luizqos500.frontend-parecar"
     },
     "android": {
       "config": {
@@ -47,14 +47,14 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFBE00"
       },
-      "package": "com.luizgz500.parecar"
+      "package": "com.luizqos500.frontendparecar"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "153a0e8b-a116-47b8-b396-f2468f7ca04a"
+        "projectId": "82e694c1-2e9e-4df8-9456-b073de489c50"
       }
     }
   }
