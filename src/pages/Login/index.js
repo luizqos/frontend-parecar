@@ -13,10 +13,12 @@ import { useNavigation } from "@react-navigation/native";
 import Loading from "../../components/Loading";
 import ButtonEntrar from "../../components/buttons/ButtonEntrar";
 import usuarioService from "../../services/UsuarioService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+
   const [mostraSenha, setMostraSenha] = useState(false);
   const [mensagem, setMensagem] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -54,6 +56,7 @@ export default function Login() {
       .login(data)
       .then((response) => {
         if (response) {
+          AsyncStorage.setItem("token", response);
           navigation.reset({
             index: 0,
             routes: [{ name: "Home" }],

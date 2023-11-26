@@ -23,6 +23,8 @@ import estacionamentoService from "../../services/EstacionamentoService";
 import MapView, { Marker } from "react-native-maps";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "react-native";
+import getStored from "../../util/getStored";
+import { Buffer } from "buffer";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -60,6 +62,9 @@ export default function Home() {
   const [reservaModalVisible, setReservaModalVisible] = useState(false);
 
   const [selectedMarker, setSelectedMarker] = useState(null);
+
+  const [clienteId, setClienteId] = useState(null);
+  const [clienteType, setClienteType] = useState(null);
 
   const toggleModalEstacionamento = (marker) => {
     setSelectedMarker(marker);
@@ -195,6 +200,26 @@ export default function Home() {
     }
     setReservaModalVisible(false);
   };
+
+  useEffect(() => {
+    getStored("token")
+      .then((getToken) => {
+        if (getToken) {
+          const token = JSON.stringify(getToken);
+          const { id, tipo } = JSON.parse(
+            Buffer.from(token.split(".")[1], "base64").toString()
+          );
+          setClienteId(id);
+          setClienteType(tipo);
+        } else {
+          console.log("Token não encontrado no AsyncStorage.");
+        }
+      })
+      .catch((error) => {
+        console.error("Erro ao obter o token do AsyncStorage:", error);
+      });
+  }, []);
+
   return (
     <View style={styles.container}>
       {initialRegion && isPermited && !!markers ? (
