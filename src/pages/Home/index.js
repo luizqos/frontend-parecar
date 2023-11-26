@@ -276,6 +276,7 @@ export default function Home() {
         isModalVisible={estacionamentoModalVisible}
         toggleModalEstacionamento={toggleModalEstacionamento}
         selectedMarker={selectedMarker}
+        clienteId={clienteId}
       />
       <ReservaModal
         isModalVisible={reservaModalVisible}

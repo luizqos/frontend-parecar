@@ -1,9 +1,9 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-export default function ButtonAgendar() {
+export default function ButtonAgendar({ onPress }) {
   return (
     <View>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={onPress}>
         <Text style={styles.buttonText}>Agendar</Text>
       </TouchableOpacity>
     </View>

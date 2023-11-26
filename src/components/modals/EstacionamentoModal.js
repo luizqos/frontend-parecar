@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   TouchableWithoutFeedback,
@@ -10,6 +10,8 @@ import * as Animatable from "react-native-animatable";
 import ButtonAgendar from "../../components/buttons/ButtonAgendar";
 import { TextInputMask } from "react-native-masked-text";
 import { StyleSheet } from "react-native";
+import converterDataParaISO8601 from "../../util/converterDataParaISO8601";
+import agendamentoService from "../../services/AgendamentoService";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -17,7 +19,50 @@ const EstacionamentoModal = ({
   isModalVisible,
   toggleModalEstacionamento,
   selectedMarker,
+  clienteId,
 }) => {
+  const [dadosReserva, setDadosReserva] = useState("");
+  function agendar(data) {
+    agendamentoService
+      .agendamento(data)
+      .then((response) => {
+        if (response) {
+          console.log(response);
+          //response.data.status
+          //to do trabalhar aqui
+        } else {
+          setTimeout(() => {
+            console.log("ocorreu um erro");
+          }, 5000);
+        }
+      })
+      .catch((error) => {
+        console.error("Erro", "Tente novamente.", error);
+      });
+  }
+
+  useEffect(() => {
+    if (selectedMarker && selectedMarker.vagas && selectedMarker.vagas[0]) {
+      const { entrada, saida } = selectedMarker;
+      const { id: idvaga } = selectedMarker.vagas[0];
+      setDadosReserva({
+        idcliente: clienteId,
+        idvaga,
+        entradareserva: new Date(converterDataParaISO8601(entrada)._j),
+        saidareserva: new Date(converterDataParaISO8601(saida)._j),
+        placa: "dpoi",
+        status: 1,
+      });
+    }
+  }, [selectedMarker, clienteId]);
+
+  const agendarEstacionamento = () => {
+    if (dadosReserva) {
+      agendar(dadosReserva);
+    } else {
+      console.error("Dados de reserva não disponíveis");
+    }
+  };
   return (
     <Modal
       animationType="slide-up"
@@ -66,7 +111,7 @@ const EstacionamentoModal = ({
                 <Text style={styles.itemModal}>
                   {`De:  ${selectedMarker.entrada}\nAté: ${selectedMarker.saida}`}
                 </Text>
-                <ButtonAgendar />
+                <ButtonAgendar onPress={agendarEstacionamento} />
               </>
             )}
           </Animatable.View>
