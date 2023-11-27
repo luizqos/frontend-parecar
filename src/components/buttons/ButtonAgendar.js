@@ -1,17 +1,21 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-export default function ButtonAgendar({ onPress }) {
+export default function ButtonAgendar({ disabled, onPress, label, color }) {
+  const buttonColor = color || "#fd7014";
   return (
     <View>
-      <TouchableOpacity style={styles.button} onPress={onPress}>
-        <Text style={styles.buttonText}>Agendar</Text>
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: buttonColor }]}
+        onPress={onPress}
+        disabled={disabled}
+      >
+        <Text style={styles.buttonText}>{!label ? "Agendar" : label}</Text>
       </TouchableOpacity>
     </View>
   );
 }
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#fd7014",
     borderRadius: 50,
     paddingVertical: 8,
     width: "70%",

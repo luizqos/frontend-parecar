@@ -22,19 +22,6 @@ const BuscaEstacionamento = ({ onBuscarEstacionamento }) => {
     const canEnableButton = saidaDate && entradaDate && coordenadas;
     setButtonDisabled(!canEnableButton);
   }, [saidaDate, entradaDate, coordenadas]);
-
-  function formatDateTime(date) {
-    const options = {
-      timeZone: "America/Sao_Paulo",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    };
-    return date.toLocaleString("pt-BR", options);
-  }
-
   const receberCoordenadas = (lat, lng) => {
     setCoordenadas({ lat, lng });
   };
@@ -75,17 +62,6 @@ const BuscaEstacionamento = ({ onBuscarEstacionamento }) => {
           />
         </View>
       </View>
-      {/* <Text style={styles.titleData}>Informe a data de reserva</Text> */}
-      {/* {saidaDate && entradaDate && (
-        <View>
-          <Text style={styles.datasReserva}>
-            Entrada: {entradaDate ? formatDateTime(entradaDate) : "N/A"}
-          </Text>
-          <Text style={styles.datasReserva}>
-            Saída: {saidaDate ? formatDateTime(saidaDate) : "N/A"}
-          </Text>
-        </View>
-      )} */}
       <View>
         <Text style={styles.titleEndereco}>Digite o endereço</Text>
         <EnderecoGoogle receberCoordenadas={receberCoordenadas} />

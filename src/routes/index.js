@@ -18,7 +18,7 @@ const Tab = createBottomTabNavigator();
 function Tabs() {
   return (
     <Tab.Navigator
-      initialRouteName="Inicio"
+      initialRouteName="Home"
       screenOptions={{
         tabBarActiveTintColor: "#0000FF",
         tabBarInactiveTintColor: "#000",
@@ -58,7 +58,7 @@ function Tabs() {
         }}
       /> */}
       <Tab.Screen
-        name="Inicio"
+        name="Home"
         component={Home}
         options={{
           headerShown: false,

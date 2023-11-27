@@ -3,7 +3,6 @@ import Config from "../util/Config";
 
 class AgendamentoService {
   async agendamento(data) {
-    console.log(data);
     axios.interceptors.request.use(
       (request) => {
         return request;

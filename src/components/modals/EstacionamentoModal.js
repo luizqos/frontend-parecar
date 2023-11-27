@@ -3,6 +3,7 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Text,
+  TextInput,
   View,
   Dimensions,
 } from "react-native";
@@ -12,6 +13,8 @@ import { TextInputMask } from "react-native-masked-text";
 import { StyleSheet } from "react-native";
 import converterDataParaISO8601 from "../../util/converterDataParaISO8601";
 import agendamentoService from "../../services/AgendamentoService";
+import Loading from "../Loading";
+import { useNavigation } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -20,23 +23,41 @@ const EstacionamentoModal = ({
   toggleModalEstacionamento,
   selectedMarker,
   clienteId,
+  dadosBusca,
 }) => {
+  const navigation = useNavigation();
   const [dadosReserva, setDadosReserva] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+  const [label, setLabel] = useState(null);
+  const [placa, setPlaca] = useState("");
+
+  function limpaState() {
+    setLoading(false);
+    setDisabled(false);
+    setLabel(null);
+  }
+
   function agendar(data) {
+    setLoading(true);
+    setDisabled(true);
     agendamentoService
       .agendamento(data)
       .then((response) => {
+        setLoading(false);
         if (response) {
-          console.log(response);
-          //response.data.status
-          //to do trabalhar aqui
+          setLabel("Agendado");
         } else {
+          setLabel("Erro ao Agendar");
           setTimeout(() => {
             console.log("ocorreu um erro");
+            setDisabled(false);
           }, 5000);
         }
       })
       .catch((error) => {
+        setLabel("Erro ao Agendar");
+        setDisabled(false);
         console.error("Erro", "Tente novamente.", error);
       });
   }
@@ -50,7 +71,6 @@ const EstacionamentoModal = ({
         idvaga,
         entradareserva: new Date(converterDataParaISO8601(entrada)._j),
         saidareserva: new Date(converterDataParaISO8601(saida)._j),
-        placa: "dpoi",
         status: 1,
       });
     }
@@ -58,11 +78,13 @@ const EstacionamentoModal = ({
 
   const agendarEstacionamento = () => {
     if (dadosReserva) {
+      dadosReserva.placa = placa;
       agendar(dadosReserva);
     } else {
       console.error("Dados de reserva não disponíveis");
     }
   };
+
   return (
     <Modal
       animationType="slide-up"
@@ -70,9 +92,16 @@ const EstacionamentoModal = ({
       visible={isModalVisible}
       onRequestClose={() => {
         toggleModalEstacionamento();
+        if (label === "Agendado") {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Home", params: { dadosNovaBusca: dadosBusca } }],
+          });
+        }
+        limpaState();
       }}
     >
-      <TouchableWithoutFeedback onPress={toggleModalEstacionamento}>
+      <TouchableWithoutFeedback onPress={() => {}}>
         <View style={styles.containerModal}>
           <Animatable.View animation="zoomIn" style={styles.bodyModal}>
             {selectedMarker && (
@@ -111,7 +140,29 @@ const EstacionamentoModal = ({
                 <Text style={styles.itemModal}>
                   {`De:  ${selectedMarker.entrada}\nAté: ${selectedMarker.saida}`}
                 </Text>
-                <ButtonAgendar onPress={agendarEstacionamento} />
+                <Text style={styles.titleItemModal}>Veiculo</Text>
+                <TextInput
+                  placeholder="Digite a placa do veiculo"
+                  autoCapitalize="characters"
+                  onChangeText={setPlaca}
+                  value={placa}
+                  maxLength={10}
+                  style={styles.input}
+                />
+                {loading ? (
+                  <>
+                    <Loading color={"white"} />
+                  </>
+                ) : (
+                  <>
+                    <ButtonAgendar
+                      onPress={agendarEstacionamento}
+                      disabled={disabled || placa.length < 7}
+                      label={label}
+                      color={placa.length < 7 ? "grey" : "#fd7014"}
+                    />
+                  </>
+                )}
               </>
             )}
           </Animatable.View>
@@ -125,7 +176,7 @@ const styles = StyleSheet.create({
   bodyModal: {
     backgroundColor: "rgba(255, 190, 0, 0.9)",
     width: width * 0.95,
-    height: height * 0.6,
+    height: height * 0.65,
     padding: 20,
     borderRadius: 10,
     maxWidth: 400,
@@ -169,6 +220,19 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "Montserrat_700Bold",
     marginBottom: 20,
+  },
+  input: {
+    backgroundColor: "#fff",
+    height: 30,
+    width: 230,
+    fontFamily: "Montserrat_400Regular",
+    borderRadius: 5,
+    marginTop: 2,
+    marginBottom: 2,
+    marginLeft: 50,
+    marginRight: 50,
+    textAlign: "center",
+    fontSize: 16,
   },
 });
 

@@ -21,16 +21,14 @@ import EstacionamentoModal from "../../components/modals/EstacionamentoModal";
 import ReservaModal from "../../components/modals/ReservaModal";
 import estacionamentoService from "../../services/EstacionamentoService";
 import MapView, { Marker } from "react-native-maps";
-import { useNavigation } from "@react-navigation/native";
 import { Image } from "react-native";
 import getStored from "../../util/getStored";
 import { Buffer } from "buffer";
 
 const { width, height } = Dimensions.get("screen");
 
-export default function Home() {
+const Home = ({ route }) => {
   ///////////////// config for expo ////////////////////////
-
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
@@ -53,6 +51,8 @@ export default function Home() {
   } else if (location) {
     text = JSON.stringify(location);
   }
+
+  const { dadosNovaBusca } = route?.params || 0;
 
   const [searchedLocation, setSearchedLocation] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -81,13 +81,23 @@ export default function Home() {
   const [markers, setMarkers] = useState([]);
   const [isPermited, setIsPermited] = useState(false);
   const [mensagem, setMensagem] = useState("Estamos buscando sua localização");
-  const navigation = useNavigation();
+  const [dadosBusca, setDadosBusca] = useState(false);
 
   const handleFloatingButtonPress = () => {
     toggleModalBuscaReserva();
   };
 
+  // useEffect(() => {
+  //   if (dadosNovaBusca) {
+  //     setDadosBusca(dadosNovaBusca);
+  //   }
+  // }, [dadosNovaBusca]);
+
   function buscarEstacionamento(dados) {
+    if (dadosNovaBusca) {
+      dados = dadosNovaBusca;
+    }
+    setDadosBusca(dados);
     estacionamentoService
       .buscaEstacionamento(dados)
       .then((response) => {
@@ -277,6 +287,7 @@ export default function Home() {
         toggleModalEstacionamento={toggleModalEstacionamento}
         selectedMarker={selectedMarker}
         clienteId={clienteId}
+        dadosBusca={dadosBusca}
       />
       <ReservaModal
         isModalVisible={reservaModalVisible}
@@ -285,7 +296,7 @@ export default function Home() {
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -342,3 +353,4 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat_700Bold",
   },
 });
+export default Home;
