@@ -7,6 +7,7 @@ import Home from "../pages/Home";
 import Cadastro from "../pages/Cadastro";
 import CadastroUsuario from "../pages/CadastroUsuario";
 import EsqueciSenha from "../pages/EsqueciSenha";
+import Reserva from "../pages/Reserva";
 
 import BottonNew from "../components/buttons/ButtonNew";
 
@@ -20,7 +21,7 @@ function Tabs() {
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        tabBarActiveTintColor: "#0000FF",
+        tabBarActiveTintColor: "grey",
         tabBarInactiveTintColor: "#000",
         tabBarLabelStyle: { fontSize: 12, fontFamily: "Montserrat_700Bold" },
         tabBarItemStyle: {
@@ -34,6 +35,16 @@ function Tabs() {
       }}
     >
       <Tab.Screen
+        name="Reservas"
+        component={Reserva}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="calendar" color={color} size={size} />
+          ),
+        }}
+      />
+      {/* <Tab.Screen
         name="Conta"
         component={Cadastro}
         options={{
@@ -46,7 +57,7 @@ function Tabs() {
             />
           ),
         }}
-      />
+      /> */}
       {/* <Tab.Screen
         name="Financeiro"
         component={Cadastro}
