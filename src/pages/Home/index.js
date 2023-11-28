@@ -78,6 +78,7 @@ const Home = ({ route }) => {
   };
 
   const [initialRegion, setinitialRegion] = useState(null);
+  const [findRegion, setFindRegion] = useState(null);
   const [markers, setMarkers] = useState([]);
   const [isPermited, setIsPermited] = useState(false);
   const [mensagem, setMensagem] = useState("Estamos buscando sua localização");
@@ -86,12 +87,6 @@ const Home = ({ route }) => {
   const handleFloatingButtonPress = () => {
     toggleModalBuscaReserva();
   };
-
-  // useEffect(() => {
-  //   if (dadosNovaBusca) {
-  //     setDadosBusca(dadosNovaBusca);
-  //   }
-  // }, [dadosNovaBusca]);
 
   function buscarEstacionamento(dados) {
     if (dadosNovaBusca) {
@@ -230,15 +225,30 @@ const Home = ({ route }) => {
       });
   }, []);
 
+  useEffect(() => {
+    if (dadosNovaBusca && dadosNovaBusca.latitude && dadosNovaBusca.longitude) {
+      setFindRegion({
+        latitude: dadosNovaBusca.latitude,
+        longitude: dadosNovaBusca.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+      setSearchedLocation({
+        lat: dadosNovaBusca.latitude,
+        lng: dadosNovaBusca.longitude,
+      });
+    }
+  }, [dadosNovaBusca]);
+
   return (
     <View style={styles.container}>
       {initialRegion && isPermited && !!markers ? (
         <MapView
           style={styles.map}
-          region={initialRegion}
+          region={findRegion ? findRegion : initialRegion}
           zoomEnabled={true}
           showsUserLocation={true}
-          loadingEnabled={true}
+          loadingEnabled={false}
         >
           {markers.map((m) => (
             <Marker
