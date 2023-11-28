@@ -52,7 +52,7 @@ const Home = ({ route }) => {
     text = JSON.stringify(location);
   }
 
-  const { dadosNovaBusca } = route?.params || 0;
+  let { dadosNovaBusca } = route?.params ?? 0;
 
   const [searchedLocation, setSearchedLocation] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -83,7 +83,6 @@ const Home = ({ route }) => {
   const [isPermited, setIsPermited] = useState(false);
   const [mensagem, setMensagem] = useState("Estamos buscando sua localização");
   const [dadosBusca, setDadosBusca] = useState(false);
-
   const handleFloatingButtonPress = () => {
     toggleModalBuscaReserva();
   };
@@ -188,6 +187,11 @@ const Home = ({ route }) => {
   }, []);
 
   const handleBuscarEstacionamento = (searchData) => {
+    if (dadosNovaBusca) {
+      dadosNovaBusca = 0;
+      setFindRegion(null);
+    }
+
     buscarEstacionamento(searchData);
 
     setSearchedLocation({
@@ -203,6 +207,7 @@ const Home = ({ route }) => {
         longitudeDelta: 0.0421,
       });
     }
+
     setReservaModalVisible(false);
   };
 
