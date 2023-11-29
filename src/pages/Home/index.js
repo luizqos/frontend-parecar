@@ -20,10 +20,9 @@ import ButtonReservar from "../../components/buttons/ButtonReservar";
 import EstacionamentoModal from "../../components/modals/EstacionamentoModal";
 import ReservaModal from "../../components/modals/ReservaModal";
 import estacionamentoService from "../../services/EstacionamentoService";
-import MapView, { Marker } from "react-native-maps";
-import { Image } from "react-native";
 import getStored from "../../util/getStored";
 import { Buffer } from "buffer";
+import Map from "./Map";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -248,42 +247,13 @@ const Home = ({ route }) => {
   return (
     <View style={styles.container}>
       {initialRegion && isPermited && !!markers ? (
-        <MapView
-          style={styles.map}
-          region={findRegion ? findRegion : initialRegion}
-          zoomEnabled={true}
-          showsUserLocation={true}
-          loadingEnabled={false}
-        >
-          {markers.map((m) => (
-            <Marker
-              key={m.id}
-              coordinate={{
-                latitude: parseFloat(m.latitude),
-                longitude: parseFloat(m.longitude),
-              }}
-              onPress={() => toggleModalEstacionamento(m)}
-            >
-              <Image
-                source={require("../../assets/img/pinIcon.png")}
-                style={{ width: 30, height: 30, resizeMode: "contain" }}
-              />
-            </Marker>
-          ))}
-          {searchedLocation && (
-            <Marker
-              coordinate={{
-                latitude: searchedLocation.lat,
-                longitude: searchedLocation.lng,
-              }}
-            >
-              <Image
-                source={require("../../assets/img/pinIconAddress.png")}
-                style={{ width: 30, height: 30, resizeMode: "contain" }}
-              />
-            </Marker>
-          )}
-        </MapView>
+        <Map
+          markers={markers}
+          initialRegion={initialRegion}
+          findRegion={findRegion}
+          searchedLocation={searchedLocation}
+          toggleModalEstacionamento={toggleModalEstacionamento}
+        />
       ) : (
         <View style={styles.containerLogo}>
           <Animatable.Image

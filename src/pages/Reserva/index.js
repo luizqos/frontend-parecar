@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import ButtonStatus from "../../components/buttons/ButtonStatus";
 import ButtonCancelar from "../../components/buttons/ButtonCancelar";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import converterDataParaFormatoBrasileiro from "../../util/converterDataParaFormatoBrasileiro";
 import axios from "axios";
 import Config from "../../util/Config";
 import getStored from "../../util/getStored";
 import { Buffer } from "buffer";
+import Aguarde from "../../components/screens/Aguarde";
+
 export default function Reserva() {
-  const navigation = useNavigation();
   const [data, setData] = useState(false);
   const [loading, setLoading] = useState(false);
   const [clienteId, setClienteId] = useState(null);
@@ -37,28 +38,40 @@ export default function Reserva() {
     }
   }, [clienteId]);
 
-  async function loadApi() {
+  const loadApi = async () => {
     if (loading) return;
     setLoading(true);
-    const response = await axios.get(
-      `${Config.API_URL}/reservas?idcliente=${clienteId}`
-    );
-    const dataOrdenada = [...response.data].sort(
-      (a, b) => new Date(b.entradareserva) - new Date(a.entradareserva)
-    );
-    setData(dataOrdenada);
-    setLoading(false);
-  }
+    try {
+      const response = await axios.get(
+        `${Config.API_URL}/reservas?idcliente=${clienteId}`
+      );
+      const dataOrdenada = [...response.data].sort(
+        (a, b) => new Date(b.entradareserva) - new Date(a.entradareserva)
+      );
+      setData(dataOrdenada);
+    } catch (error) {
+      console.error("Erro ao carregar dados da API:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (clienteId) {
+        loadApi();
+      }
+    }, [clienteId])
+  );
 
   function ListItem({ data, isLastItem }) {
+    let dataatual = new Date(new Date().getTime() - 3 * 60 * 60 * 1000);
     let label = "";
     let color = "";
     let canCancel = false;
     if (data.status === 1) {
-      const entradaReservaNoFuturo = new Date(data.entradareserva) > new Date();
-      const entradaReservaNoPassado =
-        new Date(data.entradareserva) < new Date();
-
+      const entradaReservaNoFuturo = new Date(data.entradareserva) > dataatual;
+      const entradaReservaNoPassado = new Date(data.entradareserva) < dataatual;
       if (entradaReservaNoFuturo) {
         label = "Agendado";
         color = "blue";
@@ -130,18 +143,22 @@ export default function Reserva() {
   }
   return (
     <View style={styles.container}>
-      <View style={styles.containerTipo}>
-        <Text style={styles.titulo}>Minhas Reservas</Text>
-        <FlatList
-          style={{ ...styles.flatList }}
-          contentContainerStyle={{ marginHorizontal: 20 }}
-          data={data}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({ item, index }) => (
-            <ListItem data={item} isLastItem={index === data.length - 1} />
-          )}
-        />
-      </View>
+      {data ? (
+        <View style={styles.containerTipo}>
+          <Text style={styles.titulo}>Minhas Reservas</Text>
+          <FlatList
+            style={{ ...styles.flatList }}
+            contentContainerStyle={{ marginHorizontal: 20 }}
+            data={data}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={({ item, index }) => (
+              <ListItem data={item} isLastItem={index === data.length - 1} />
+            )}
+          />
+        </View>
+      ) : (
+        <Aguarde />
+      )}
     </View>
   );
 }
@@ -216,12 +233,12 @@ const styles = StyleSheet.create({
   },
   containerTipo: {
     marginTop: 2,
-    marginBottom: "2%",
-    paddingStart: "3%",
+    marginBottom: 10,
     height: "100%",
   },
   titulo: {
     fontSize: 20,
+    marginLeft: 20,
     fontFamily: "Montserrat_700Bold",
     color: "black",
   },
