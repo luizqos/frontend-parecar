@@ -51,12 +51,14 @@ const EstacionamentoModal = ({
           setLabel("Erro ao Agendar");
           setTimeout(() => {
             setDisabled(false);
+            setLabel(null);
           }, 5000);
         }
       })
       .catch((error) => {
         setLabel("Erro ao Agendar");
         setDisabled(false);
+        setLabel(null);
         console.error("Erro", "Tente novamente.", error);
       });
   }

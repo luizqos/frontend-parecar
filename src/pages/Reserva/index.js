@@ -64,7 +64,7 @@ export default function Reserva() {
         color = "blue";
         canCancel = true;
       } else if (entradaReservaNoPassado && data.datahoraentrada === null) {
-        label = "Abandono";
+        label = "Ausente";
         color = "grey";
       } else if (data.datahoraentrada !== null) {
         label = "Confirmado";
