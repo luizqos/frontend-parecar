@@ -1,5 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Modal,
+  Pressable,
+} from "react-native";
 import ButtonStatus from "../../components/buttons/ButtonStatus";
 import ButtonCancelar from "../../components/buttons/ButtonCancelar";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -14,6 +21,9 @@ export default function Reserva() {
   const [data, setData] = useState(false);
   const [loading, setLoading] = useState(false);
   const [clienteId, setClienteId] = useState(null);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectedReservationId, setSelectedReservationId] = useState(null);
+
   useEffect(() => {
     getStored("token")
       .then((getToken) => {
@@ -64,6 +74,23 @@ export default function Reserva() {
     }, [clienteId])
   );
 
+  const handleCancelReservation = async (reservationId, canceladoPor) => {
+    try {
+      const response = await axios.delete(`${Config.API_URL}/reservas`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          id: reservationId,
+          canceladoPor: canceladoPor,
+        },
+      });
+      loadApi();
+    } catch (error) {
+      console.error("Erro ao cancelar reserva:", error);
+    }
+  };
+
   function ListItem({ data, isLastItem }) {
     let dataatual = new Date(new Date().getTime() - 3 * 60 * 60 * 1000);
     let label = "";
@@ -89,8 +116,16 @@ export default function Reserva() {
     }
 
     const renderButtonCancelar = canCancel ? (
-      <ButtonCancelar color={"red"} label={"Cancelar"} />
+      <ButtonCancelar
+        color={"red"}
+        label={"Cancelar"}
+        onPress={() => {
+          setSelectedReservationId(data.id);
+          setShowCancelModal(true);
+        }}
+      />
     ) : null;
+
     return (
       <View style={{ ...styles.listItem, marginBottom: isLastItem ? 75 : 10 }}>
         <View style={styles.separator}></View>
@@ -141,6 +176,39 @@ export default function Reserva() {
       </View>
     );
   }
+
+  const CancelModal = () => (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={showCancelModal}
+      onRequestClose={() => {
+        setShowCancelModal(!showCancelModal);
+      }}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>Deseja cancelar esta reserva?</Text>
+          <Pressable
+            style={[styles.buttonModal, { backgroundColor: "red" }]}
+            onPress={() => setShowCancelModal(!showCancelModal)}
+          >
+            <Text style={styles.buttonText}>Cancelar</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.buttonModal, { backgroundColor: "green" }]}
+            onPress={() => {
+              handleCancelReservation(selectedReservationId, "C");
+              setShowCancelModal(!showCancelModal);
+            }}
+          >
+            <Text style={styles.buttonText}>Confirmar</Text>
+          </Pressable>
+        </View>
+      </View>
+    </Modal>
+  );
+
   return (
     <View style={styles.container}>
       {data ? (
@@ -159,6 +227,7 @@ export default function Reserva() {
       ) : (
         <Aguarde />
       )}
+      <CancelModal />
     </View>
   );
 }
@@ -216,6 +285,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  buttonModal: {
+    borderRadius: 10,
+    width: 120,
+    paddingVertical: 8,
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginTop: 15,
+    marginBottom: 15,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   buttonText: {
     fontSize: 18,
     color: "black",
@@ -241,5 +321,26 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     fontFamily: "Montserrat_700Bold",
     color: "black",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });

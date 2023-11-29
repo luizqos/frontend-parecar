@@ -1,11 +1,12 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-export default function ButtonCancelar({ label, color }) {
+export default function ButtonCancelar({ label, color, onPress }) {
   const buttonColor = color || "red";
   return (
     <View>
       <TouchableOpacity
         style={[styles.button, { backgroundColor: buttonColor }]}
+        onPress={onPress}
       >
         <Text style={styles.buttonText}>{!label ? "" : label}</Text>
       </TouchableOpacity>
