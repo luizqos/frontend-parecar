@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Welcome from "../pages/Welcome";
 import Login from "../pages/Login";
 import Home from "../pages/Home";
-import Cadastro from "../pages/Cadastro";
+import Usuario from "../pages/Usuario";
 import CadastroUsuario from "../pages/CadastroUsuario";
 import EsqueciSenha from "../pages/EsqueciSenha";
 import Reserva from "../pages/Reserva";
@@ -93,13 +93,13 @@ function Tabs() {
         }}
       /> */}
       <Tab.Screen
-        name="Ajustes"
-        component={Cadastro}
+        name="Meus Dados"
+        component={Usuario}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
-              name="cog-outline"
+              name="account-circle"
               color={color}
               size={size}
             />

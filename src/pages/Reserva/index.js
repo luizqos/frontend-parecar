@@ -1,12 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Modal,
-  Pressable,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import ButtonStatus from "../../components/buttons/ButtonStatus";
 import ButtonCancelar from "../../components/buttons/ButtonCancelar";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -181,7 +174,9 @@ export default function Reserva() {
     <View style={styles.container}>
       {data ? (
         <View style={styles.containerTipo}>
-          <Text style={styles.titulo}>Minhas Reservas</Text>
+          <View style={styles.containerHeader}>
+            <Text style={styles.message}>Minhas Reservas</Text>
+          </View>
           <FlatList
             style={{ ...styles.flatList }}
             contentContainerStyle={{ marginHorizontal: 20 }}
@@ -280,6 +275,16 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 20,
     marginLeft: 20,
+    fontFamily: "Montserrat_700Bold",
+    color: "black",
+  },
+  containerHeader: {
+    marginTop: "14%",
+    marginBottom: "8%",
+    paddingStart: "5%",
+  },
+  message: {
+    fontSize: 24,
     fontFamily: "Montserrat_700Bold",
     color: "black",
   },
