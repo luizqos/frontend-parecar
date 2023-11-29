@@ -16,6 +16,7 @@ import Config from "../../util/Config";
 import getStored from "../../util/getStored";
 import { Buffer } from "buffer";
 import Aguarde from "../../components/screens/Aguarde";
+import CancelModal from "../../components/modals/ConfirmaCancelamento";
 
 export default function Reserva() {
   const [data, setData] = useState(false);
@@ -176,39 +177,6 @@ export default function Reserva() {
       </View>
     );
   }
-
-  const CancelModal = () => (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={showCancelModal}
-      onRequestClose={() => {
-        setShowCancelModal(!showCancelModal);
-      }}
-    >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>Deseja cancelar esta reserva?</Text>
-          <Pressable
-            style={[styles.buttonModal, { backgroundColor: "red" }]}
-            onPress={() => setShowCancelModal(!showCancelModal)}
-          >
-            <Text style={styles.buttonText}>Cancelar</Text>
-          </Pressable>
-          <Pressable
-            style={[styles.buttonModal, { backgroundColor: "green" }]}
-            onPress={() => {
-              handleCancelReservation(selectedReservationId, "C");
-              setShowCancelModal(!showCancelModal);
-            }}
-          >
-            <Text style={styles.buttonText}>Confirmar</Text>
-          </Pressable>
-        </View>
-      </View>
-    </Modal>
-  );
-
   return (
     <View style={styles.container}>
       {data ? (
@@ -227,7 +195,12 @@ export default function Reserva() {
       ) : (
         <Aguarde />
       )}
-      <CancelModal />
+      <CancelModal
+        visible={showCancelModal}
+        onCancel={() => setShowCancelModal(false)}
+        onConfirm={handleCancelReservation}
+        reservationId={selectedReservationId}
+      />
     </View>
   );
 }
@@ -264,7 +237,6 @@ const styles = StyleSheet.create({
     color: "#000",
     marginTop: 2,
   },
-
   listStatus: {
     fontSize: 16,
     fontFamily: "Montserrat_700Bold",
@@ -278,17 +250,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     paddingVertical: 8,
     width: "70%",
-    marginLeft: "auto",
-    marginRight: "auto",
-    marginTop: 15,
-    marginBottom: 15,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonModal: {
-    borderRadius: 10,
-    width: 120,
-    paddingVertical: 8,
     marginLeft: "auto",
     marginRight: "auto",
     marginTop: 15,
@@ -321,26 +282,5 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     fontFamily: "Montserrat_700Bold",
     color: "black",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
   },
 });
