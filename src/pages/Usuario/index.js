@@ -70,7 +70,6 @@ export default function Usuario() {
           >
             <Text style={styles.title}>Nome</Text>
             <TextInput
-              placeholder="Digite seu nome"
               autoCapitalize="characters"
               maxLength={100}
               value={data.nome}
@@ -79,7 +78,6 @@ export default function Usuario() {
             />
             <Text style={styles.title}>CPF</Text>
             <TextInput
-              placeholder="Digite seu nome"
               autoCapitalize="characters"
               maxLength={100}
               value={data.cpf}
@@ -88,7 +86,6 @@ export default function Usuario() {
             />
             <Text style={styles.title}>Email</Text>
             <TextInput
-              placeholder="Digite seu nome"
               autoCapitalize="none"
               maxLength={100}
               value={data.email}
@@ -97,7 +94,6 @@ export default function Usuario() {
             />
             <Text style={styles.title}>Telefone</Text>
             <TextInput
-              placeholder="Digite seu nome"
               autoCapitalize="none"
               maxLength={100}
               value={data.telefone}
@@ -106,7 +102,6 @@ export default function Usuario() {
             />
             <Text style={styles.title}>Placa do Veículo</Text>
             <TextInput
-              placeholder="Digite a placa do veículo"
               autoCapitalize="characters"
               maxLength={10}
               value={data.placa}
