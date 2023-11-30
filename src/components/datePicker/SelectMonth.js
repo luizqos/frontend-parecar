@@ -82,7 +82,6 @@ const SelectMonth = () => {
 
   useEffect(() => {
     onSelectMonth(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prevDisable, nextDisable]);
 
   const onChangeYear = (text) => {

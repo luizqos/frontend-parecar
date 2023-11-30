@@ -1,4 +1,3 @@
-// CancelModal.js
 import React from "react";
 import { Modal, Text, View, Pressable, StyleSheet } from "react-native";
 

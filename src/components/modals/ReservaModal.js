@@ -19,8 +19,6 @@ const ReservaModal = ({
 }) => {
   const handleModalPress = (event) => {
     const { locationX, locationY } = event.nativeEvent;
-
-    // Verifique se o clique está dentro do conteúdo do modal
     if (
       locationX < 0 ||
       locationY < 0 ||

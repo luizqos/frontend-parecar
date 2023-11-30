@@ -15,6 +15,7 @@ import converterDataParaISO8601 from "../../util/converterDataParaISO8601";
 import agendamentoService from "../../services/AgendamentoService";
 import Loading from "../Loading";
 import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -38,6 +39,14 @@ const EstacionamentoModal = ({
     setLabel(null);
   }
 
+  const showToast = (type, texto1, texto2) => {
+    Toast.show({
+      type: type,
+      text1: texto1,
+      text2: texto2,
+    });
+  };
+
   function agendar(data) {
     setLoading(true);
     setDisabled(true);
@@ -45,10 +54,11 @@ const EstacionamentoModal = ({
       .agendamento(data)
       .then((response) => {
         setLoading(false);
-        if (response) {
+        if (!response.message) {
           setLabel("Agendado");
         } else {
           setLabel("Erro ao Agendar");
+          showToast("error", "Erro", response.message);
           setTimeout(() => {
             setDisabled(false);
             setLabel(null);
@@ -57,6 +67,7 @@ const EstacionamentoModal = ({
       })
       .catch((error) => {
         setLabel("Erro ao Agendar");
+        showToast("error", "Erro", "Tente novamente mais tarde.");
         setDisabled(false);
         setLabel(null);
         console.error("Erro", "Tente novamente.", error);
@@ -104,6 +115,7 @@ const EstacionamentoModal = ({
     >
       <TouchableWithoutFeedback onPress={() => {}}>
         <View style={styles.containerModal}>
+          <Toast />
           <Animatable.View animation="zoomIn" style={styles.bodyModal}>
             {selectedMarker && (
               <>

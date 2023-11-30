@@ -21,8 +21,19 @@ class AgendamentoService {
       const reserva = JSON.stringify(response.data);
       return Promise.resolve(reserva);
     } catch (error) {
-      console.log(error);
-      return false;
+      let mensagem = "";
+      if (error.response) {
+        mensagem = error.response.data;
+        console.error("Resposta de erro do servidor:", error.response.status);
+      } else if (error.request) {
+        mensagem = "Sem resposta do servidor";
+        console.error("Sem resposta do servidor");
+      } else {
+        mensagem = error.message;
+        console.error("Erro ao fazer a requisição:", mensagem.mensagem);
+      }
+
+      return mensagem;
     }
   }
 }
