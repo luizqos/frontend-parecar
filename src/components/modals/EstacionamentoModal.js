@@ -47,6 +47,10 @@ const EstacionamentoModal = ({
     });
   };
 
+  function removeCaracteres(texto) {
+    return texto.replace(/[^a-zA-Z0-9]/g, "");
+  }
+
   function agendar(data) {
     setLoading(true);
     setDisabled(true);
@@ -157,7 +161,9 @@ const EstacionamentoModal = ({
                 <TextInput
                   placeholder="Digite a placa do veiculo"
                   autoCapitalize="characters"
-                  onChangeText={setPlaca}
+                  onChangeText={(text) => {
+                    setPlaca(removeCaracteres(text));
+                  }}
                   value={placa}
                   maxLength={10}
                   style={styles.input}
